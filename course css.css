@@ -62,6 +62,9 @@ padding:30px,120px;
   text-align: center;
   margin: 0;                   
 }
+.card:hover {
+  transform: scale(1.05);
+}
 .footer {
     background-color: #030b77;
     size: 50px;
