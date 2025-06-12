@@ -62,8 +62,44 @@ padding:30px,120px;
   text-align: center;
   margin: 0;                   
 }
+.card {
+  background: rgb(254, 254, 254);
+  padding: 30px;
+  border-radius: 12px;
+  width: 500px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  animation: rgb-glow 4s linear infinite;
+  border: 2px solid transparent;
+}
 .card:hover {
   transform: scale(1.05);
+}
+@keyframes rgb-glow {
+  0% {
+    box-shadow: 0 0 10px rgb(255, 0, 0),
+                0 0 20px rgb(255, 0, 0);
+  }
+  25% {
+    box-shadow: 0 0 10px rgb(0, 255, 0),
+                0 0 20px rgb(0, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 10px rgb(0, 0, 255),
+                0 0 20px rgb(0, 0, 255);
+  }
+  75% {
+    box-shadow: 0 0 10px rgb(255, 0, 255),
+                0 0 20px rgb(255, 0, 255);
+  }
+  100% {
+    box-shadow: 0 0 10px rgb(255, 0, 0),
+                0 0 20px rgb(255, 0, 0);
+  }
+}
+.footer {
+    background-color: #030b77;
+    size: 50px;
 }
 .footer {
     background-color: #030b77;
