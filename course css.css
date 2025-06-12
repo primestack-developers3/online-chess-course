@@ -67,7 +67,7 @@ padding:30px,120px;
   background: rgb(254, 254, 254);
   padding: 30px;
   border-radius: 12px;
-  width: 250px;
+  width: 300px;
   text-align: center;
   transition: transform 0.3s ease;
   animation: rgb-glow 4s linear infinite;
