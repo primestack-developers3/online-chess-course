@@ -105,3 +105,18 @@ padding:30px,120px;
     width:1550px;
     color:white;
 }
+.b1 {
+  background-color: #ffffff;
+  border-radius: 25px;
+}
+.b1:hover {
+  transition:0.75s;
+    background-color: #1e6621; /* Darker green */
+  transform: scale(1.1);
+  transition:0.75s;
+}
+.newsbox {
+  background-color: #453b3b;
+  border-radius: 25px;
+  padding:flex;
+}
