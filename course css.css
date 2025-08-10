@@ -82,6 +82,7 @@ section {
 
 .card:hover {
     transform: scale(1.05);
+    background-color:lightblue;
 }
 
 /* News Box */
@@ -167,4 +168,5 @@ section {
                 0 0 20px rgb(123, 215, 233);
   }
 }
+
 
