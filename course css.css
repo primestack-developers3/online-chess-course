@@ -1,6 +1,5 @@
-
 body {
-    background-color:rgb(6, 6, 106) ;
+    background-color: rgb(6, 6, 106);
     font-family: 'Times New Roman', Times, serif;
     margin: 0;
     padding: 0;
@@ -8,78 +7,148 @@ body {
 }
 
 header {
-    background:linear-gradient(blue,rgb(66, 9, 113));
+    background: linear-gradient(blue, rgb(66, 9, 113));
     padding: 10px;
-    width:1550px;
+    width: 100%; /* Full width on all devices */
+    box-sizing: border-box;
 }
 
 nav ul {
     list-style: none;
-    padding: 10;
+    padding: 0;
+    margin: 0;
 }
 
 nav ul li {
-    display: inline;
-    margin: 0 15px;
+    display: inline-block;
+    margin: 0 10px;
 }
 
 nav ul li a {
-    color: rgb(255, 255, 255);
+    color: #fff;
     text-decoration: none;
 }
 
 section {
     padding: 20px;
 }
+
 .coloredbutton {
-background-color:rgb(0, 0, 0);
-padding:30px,120px;
-}
-.textcolor {
-    color:white
+    background-color: #000;
+    padding: 10px 20px;
+    color: white;
 }
 
+.textcolor {
+    color: white;
+}
+
+/* About Section Layout */
 #about {
-  display: flex;                
-  justify-content: center;      
-  gap: 20px;                    
-  flex-wrap: wrap;              
-  padding: 50px 0;              
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 50px 0;
 }
 
 .boxed-text {
-  display: flex;                
-  flex-direction:column;       
-  justify-content: center;
-  align-items: center;
-  
-  border: 8px solid #333;     
-  padding: 10px;              
-  width: fit-content;         
-  background-color: #201d1d; 
-  border-radius: 25px;         
-  font-family: cursive;
-  color: #ffffff;
-  text-align: center;
-  margin: 0;                   
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 8px solid #333;
+    padding: 15px;
+    max-width: 90%;
+    background-color: #201d1d;
+    border-radius: 25px;
+    font-family: cursive;
+    color: #fff;
+    text-align: center;
 }
+
+/* Cards */
 .card {
-  background: rgb(254, 254, 254);
-  padding: 30px;
-  border-radius: 12px;
-  width: 300px;
-  text-align: center;
-  transition: transform 0.3s ease;
-  animation: rgb-glow 4s linear infinite;
-  border: 2px solid transparent;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    animation: rgb-glow 4s linear infinite;
+    border: 2px solid transparent;
+    margin: 15px; /* ⬅ Adds gap between cards */
 }
+
 .card:hover {
-  transform: scale(1.05);
+    transform: scale(1.05);
+}
+
+/* News Box */
+.newsbox {
+    background-color: #2d2a2a;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 95%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    color: white;
+    text-align: left;
+}
+.newsbox img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+.newsbox h1, .newsbox p {
+    margin: 10px 0;
+}
+
+/* Buttons */
+.b1 {
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+.b1:hover {
+    background-color: #1e6621;
+    transform: scale(1.1);
+    transition: 0.75s;
+}
+
+/* Footer */
+.footer {
+    background-color: #030b77;
+    height: auto;
+    padding: 15px;
+    color: white;
+    width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header img {
+        max-width: 90%;
+        height: auto;
+    }
+    nav ul li {
+        display: block;
+        margin: 8px 0;
+    }
+    .card {
+        width: 90%;
+    }
+    .boxed-text {
+        max-width: 100%;
+    }
 }
 @keyframes rgb-glow {
   0% {
-    box-shadow: 0 0 10px rgb(255, 0, 0),
-                0 0 20px rgb(255, 0, 0);
+    box-shadow: 0 0 10px rgb(0, 255, 140),
+                0 0 20px rgb(0, 255, 140);
   }
   25% {
     box-shadow: 0 0 10px rgb(0, 255, 0),
@@ -90,33 +159,12 @@ padding:30px,120px;
                 0 0 20px rgb(0, 0, 255);
   }
   75% {
-    box-shadow: 0 0 10px rgb(255, 0, 255),
-                0 0 20px rgb(255, 0, 255);
+    box-shadow: 0 0 10px rgb(0, 183, 255),
+                0 0 20px rgb(0, 183, 255);
   }
   100% {
-    box-shadow: 0 0 10px rgb(255, 0, 0),
-                0 0 20px rgb(255, 0, 0);
+    box-shadow: 0 0 10px rgb(123, 215, 233),
+                0 0 20px rgb(123, 215, 233);
   }
 }
-.footer {
-    background-color: #030b77;
-    size: 50px;
-    height:100px;
-    width:1550px;
-    color:white;
-}
-.b1 {
-  background-color: #ffffff;
-  border-radius: 25px;
-}
-.b1:hover {
-  transition:0.75s;
-    background-color: #1e6621; /* Darker green */
-  transform: scale(1.1);
-  transition:0.75s;
-}
-.newsbox {
-  background-color: #453b3b;
-  border-radius: 25px;
-  padding:flex;
-}
+
