@@ -10,6 +10,18 @@ body {
     margin: 0;
 }
 
+#undo-button {
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    position: relative; /* changed from static to relative */
+    z-index: 10;       /* Add a z-index to ensure it's on top */
+    position: absolute;
+    top: 101%;
+}
+
 header {
     text-align: center;
     margin-bottom: 20px;
