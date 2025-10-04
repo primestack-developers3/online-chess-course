@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.classList.contains('piece')) {
             draggedPiece = e.target;
             sourceSquare = e.target.parentElement;
+            console.log("Drag Start - Piece:", draggedPiece, "Source:", sourceSquare); // ADDED
             setTimeout(() => {
                 e.target.style.display = 'none';
             }, 0);
@@ -88,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleDragEnd(e) {
         if (draggedPiece) {
             draggedPiece.style.display = 'block';
+
             draggedPiece = null;
             sourceSquare = null;
         }
@@ -102,9 +104,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (draggedPiece) {
             const targetElement = e.target;
             const targetSquare = targetElement.classList.contains('square') ? targetElement : targetElement.parentElement;
-            
+
+            console.log("Drop - Target Element:", targetElement, "Target Square:", targetSquare); // ADDED
+
             // Prevent dropping on the same square
             if (targetSquare === sourceSquare) {
+                return;
+            }
+          
+            // Check if the target square contains a piece of the same color
+            if (targetSquare.firstChild && draggedPiece.classList.contains('white-piece') === targetSquare.firstChild.classList.contains('white-piece')) {
                 return;
             }
 
@@ -112,9 +121,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
             logMove(sourceSquare, targetSquare, draggedPiece.dataset.piece, isCapture);
 
-            // If target square has a piece, remove it (capture)
-            if (isCapture) {
+             // If target square has a piece, remove it (capture)
+             if (isCapture) {
                 targetSquare.innerHTML = '';
+            }
+
+            // Castling Implementation (basic, without check validation)
+            const startCol = parseInt(sourceSquare.dataset.col, 10);
+            const endCol = parseInt(targetSquare.dataset.col, 10);
+            const row = parseInt(sourceSquare.dataset.row, 10);
+
+            if (draggedPiece.dataset.piece === 'k' || draggedPiece.dataset.piece === 'K') {
+                if (startCol - endCol === 2) { // Kingside castling
+                    const rookSquare = boardElement.querySelector(`[data-row="${row}"][data-col="0"]`);
+                    const rook = rookSquare.firstChild;
+                    const newRookSquare = boardElement.querySelector(`[data-row="${row}"][data-col="3"]`);
+
+                    newRookSquare.appendChild(rook);
+                    rookSquare.innerHTML = '';
+
+                } else if (endCol - startCol === 2) { // Queenside castling
+                    const rookSquare = boardElement.querySelector(`[data-row="${row}"][data-col="7"]`);
+                    const rook = rookSquare.firstChild;
+                    const newRookSquare = boardElement.querySelector(`[data-row="${row}"][data-col="5"]`);
+
+                    newRookSquare.appendChild(rook);
+                    rookSquare.innerHTML = '';
+                }
+
+
+
+
+
+
+
             }
             
             targetSquare.appendChild(draggedPiece);
@@ -135,6 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const listItem = document.createElement('li');
             listItem.textContent = moveNotation;
             moveListElement.appendChild(listItem);
+            moveCount++;
+            
         }
     }
 
@@ -143,5 +185,5 @@ document.addEventListener('DOMContentLoaded', () => {
     boardElement.addEventListener('dragstart', handleDragStart);
     boardElement.addEventListener('dragend', handleDragEnd);
     boardElement.addEventListener('dragover', handleDragOver);
-    boardElement.addEventListener('drop', handleDrop);
+   boardElement.addEventListener('drop', handleDrop);
 });
