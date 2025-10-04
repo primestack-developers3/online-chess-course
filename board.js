@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let draggedPiece = null;
     let sourceSquare = null;
     let moveCount = 0;
+    let moveHistory = [];
 
     // Unicode characters for chess pieces
     const pieces = {
@@ -111,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetSquare === sourceSquare) {
                 return;
             }
-          
+
             // Check if the target square contains a piece of the same color
             if (targetSquare.firstChild && draggedPiece.classList.contains('white-piece') === targetSquare.firstChild.classList.contains('white-piece')) {
                 return;
@@ -120,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const isCapture = targetSquare.firstChild && targetSquare.firstChild !== draggedPiece;
 
             logMove(sourceSquare, targetSquare, draggedPiece.dataset.piece, isCapture);
+            moveHistory.push({source: sourceSquare, target: targetSquare, piece: draggedPiece, capturedPiece: targetSquare.firstChild || null});
 
              // If target square has a piece, remove it (capture)
              if (isCapture) {
@@ -156,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             }
-            
+
             targetSquare.appendChild(draggedPiece);
         }
     }
@@ -176,10 +178,35 @@ document.addEventListener('DOMContentLoaded', () => {
             listItem.textContent = moveNotation;
             moveListElement.appendChild(listItem);
             moveCount++;
-            
+
         }
     }
 
+    function undoMove() {
+        if (moveHistory.length > 0) {
+            const lastMove = moveHistory.pop();
+            const sourceSquare = lastMove.source;
+            const targetSquare = lastMove.target;
+            const piece = lastMove.piece;
+            const capturedPiece = lastMove.capturedPiece;
+
+            // Move the piece back to its source square
+            sourceSquare.appendChild(piece);
+            targetSquare.innerHTML = ''; // Clear the target square
+
+            // If a piece was captured, put it back on the target square
+            if (capturedPiece) {
+                targetSquare.appendChild(capturedPiece);
+            }
+
+            // Remove the last move from the move list
+            moveListElement.removeChild(moveListElement.lastChild);
+            moveCount--;
+        }
+    }
+
+    const undoButton = document.getElementById('undo-button');
+    undoButton.addEventListener('click', undoMove);
     createBoard();
 
     boardElement.addEventListener('dragstart', handleDragStart);
@@ -187,3 +214,4 @@ document.addEventListener('DOMContentLoaded', () => {
     boardElement.addEventListener('dragover', handleDragOver);
    boardElement.addEventListener('drop', handleDrop);
 });
+
