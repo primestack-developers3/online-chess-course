@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Board and Bot</title>
+    <link rel="stylesheet" href="board.css">
+</head>
+<body>
+    <header>
+        <h1>Interactive Chess Board</h1>
+        <a href="index.html" class="home-link">Back to Home</a>
+    </header>
+    <main class="board-layout">
+        <div class="board-wrapper">
+            <div class="ranks"></div>
+            <div id="chessboard"></div>
+            <div class="files"></div>
+        </div>
+        <div id="move-history" class="move-history-container">
+            <h2>Move History</h2>
+            <ol id="move-list"></ol>
+        </div>
+    </main>
+    <script src="board.js"></script>
+</body>
+</html>
