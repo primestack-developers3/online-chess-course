@@ -1,29 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Sicilian defense</title>
-    <link rel="stylesheet" href="sicilian.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sicilian Defense — Online Chess Course</title>
+  <link rel="stylesheet" href="sicilian.css" />
 </head>
-<header>
-<h1 style="font-size:40px;">Sicilian Defense</h1>
-</header>
 <body>
-    <h1 style="color: white;font-size:30px;">Description</h1><br>
-    <p style="color: white;font-size: 20px;">The Sicilian Defense (1.e4 c5) is one of the most aggressive and complex responses to <br>
-        1.e4. It creates an asymmetrical position that offers Black dynamic counterplay, particularly on the queenside, while White usually attacks on the kingside.<br>
-         There are many sub-variations like the Najdorf, Dragon, and Sveshnikov, each with its own sharp and theoretical character.<br>
-         It is a favorite at all levels due to its winning chances and fighting nature.
-</p><br>
-</body>
-<img src="sicilian.png" alt="italian"><br>
-<iframe
-width="560"
-height="315"
-src="https://www.youtube.com/embed/qM4e7g2RukI"
-title="italian"
-frameboard="0"
-allow="accelometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
-allowfullscreen>
-</iframe>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">OC</div>
+        <div>
+          <h1>Sicilian Defense</h1>
+          <p>Sharp, asymmetrical responses to 1.e4</p>
+        </div>
+      </div>
+    </header>
+
+    <main style="margin-top:20px">
+      <section class="card">
+        <h2>Description</h2>
+        <p>The Sicilian Defense (1.e4 c5) is one of the most aggressive and complex responses to 1.e4. It creates an asymmetrical position that offers Black dynamic counterplay, particularly on the queenside, while White usually attacks on the kingside. There are many sub-variations like the Najdorf, Dragon, and Sveshnikov, each with its own sharp and theoretical character. It is a favorite at all levels due to its winning chances and fighting nature.</p>
+      </section>
+
+      <div class="media-grid" style="margin-top:18px;">
+        <!-- Video card -->
+        <article class="media-card video-box" aria-label="Lesson video">
+          <div class="media" role="region" aria-label="Video player">
+            <img class="poster" src="sicilian.png" alt="Sicilian opening poster" />
+            <button class="play-overlay" aria-label="Play video" data-video-id="qM4e7g2RukI">▶</button>
+          </div>
+          <div class="meta">
+            <div class="kv">
+              <h2 class="title">Sicilian Defense — Lesson</h2>
+              <span class="media-badge">Lesson</span>
+            </div>
+            <p class="caption">A concise overview and illustrative examples.</p>
+          </div>
+        </article>
+
+        <!-- Image card -->
+        <aside class="media-card image-box sidebar" aria-label="Image gallery">
+          <div class="media">
+            <img src="sicilian.png" alt="Diagram: Sicilian Defense example" />
+          </div>
+          <div class="meta">
+            <h2 class="title">Position Diagram</h2>
+            <p class="caption">Key position from a typical Sicilian battle.</p>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              <a class="btn btn-primary" href="#" role="button">View more</a>
+              <a class="btn" href="sicilian.png" download>Download</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer>
+      <div class="small">© Online Chess Course</div>
+      <div class="small">Made with ♟️</div>
+    </footer>
+  </div>
+
+  <script>
+    // lazy-load YouTube iframe on play
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.play-overlay');
+      if (!btn) return;
+      const container = btn.closest('.media');
+      const id = btn.getAttribute('data-video-id');
+      if (!id || !container) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
+      iframe.title = 'Lesson video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.setAttribute('frameborder', '0');
+      iframe.allowFullscreen = true;
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      container.innerHTML = '';
+      container.appendChild(iframe);
+    });
+  </script>
 </body>
 </html>

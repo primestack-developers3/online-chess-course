@@ -1,28 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Vienna Game</title>
-    <link rel="stylesheet" href="sicilian.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vienna Game — Online Chess Course</title>
+  <link rel="stylesheet" href="sicilian.css" />
 </head>
-<header>
-<h1 style="font-size:40px;">Vienna Game</h1>
-</header>
 <body>
-    <h1 style="color: white;font-size:30px;">Description</h1><br>
-    <p style="color: white;font-size: 20px;">The Vienna Game (1.e4 e5 2.Nc3) is a flexible opening that can transpose into gambits or more positional lines.<br>
-         It often leads to rich tactical opportunities, especially <br>
-         if White plays f4 early, aiming for rapid central control and kingside attacks.
-</p><br>
-</body>
-<img src="vienna.png" alt="italian"><br>
-<iframe
-width="560"
-height="315"
-src="https://www.youtube.com/embed/JVxENCPcCjU"
-title="italian"
-frameboard="0"
-allow="accelometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
-allowfullscreen>
-</iframe>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">OC</div>
+        <div>
+          <h1>Vienna Game</h1>
+          <p>Flexible, tactical and transpositional play after 1.e4 e5 2.Nc3</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" style="margin-top:20px;">
+        <h2>Description</h2>
+        <p>The Vienna Game (1.e4 e5 2.Nc3) is a flexible opening that can transpose into gambits or more positional lines.
+           It often leads to rich tactical opportunities, especially if White plays f4 early, aiming for rapid central control and kingside attacks.</p>
+      </section>
+
+      <div class="media-grid" style="margin-top:18px;">
+        <!-- Video card -->
+        <article class="media-card video-box" aria-label="Vienna lesson video">
+          <div class="media" role="region" aria-label="Video player">
+            <img class="poster" src="vienna.png" alt="Vienna Game poster" />
+            <button class="play-overlay" aria-label="Play video" data-video-id="JVxENCPcCjU">▶</button>
+          </div>
+          <div class="meta">
+            <div class="kv">
+              <h2 class="title">Vienna — Lesson</h2>
+              <span class="media-badge">Lesson</span>
+            </div>
+            <p class="caption">Ideas, plans and an illustrative game from the Vienna.</p>
+          </div>
+        </article>
+
+        <!-- Image card -->
+        <aside class="media-card image-box sidebar" aria-label="Diagram">
+          <div class="media">
+            <img src="vienna.png" alt="Diagram: Vienna example" />
+          </div>
+          <div class="meta">
+            <h2 class="title">Position Diagram</h2>
+            <p class="caption">Typical position and tactical motifs from the Vienna Game.</p>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              <a class="btn btn-primary" href="#" role="button">View more</a>
+              <a class="btn" href="vienna.png" download>Download</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer>
+      <div class="small">© Online Chess Course</div>
+      <div class="small">Made with ♟️</div>
+    </footer>
+  </div>
+
+  <script>
+    // lazy-load YouTube iframe on play
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.play-overlay');
+      if (!btn) return;
+      const container = btn.closest('.media');
+      const id = btn.getAttribute('data-video-id');
+      if (!id || !container) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
+      iframe.title = 'Lesson video';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      container.innerHTML = '';
+      container.appendChild(iframe);
+    });
+  </script>
 </body>
 </html>

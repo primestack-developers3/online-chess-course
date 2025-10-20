@@ -1,29 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Caro kann</title>
-    <link rel="stylesheet" href="carokann.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Caro-Kann — Online Chess Course</title>
+  <link rel="stylesheet" href="sicilian.css" />
 </head>
-<header>
-<h1 style="font-size:40px;">Caro-Kann defense</h1>
-</header>
 <body>
-    <h1 style="color: white;font-size:30px;">Description</h1><br>
-    <p style="color: white;font-size: 20px;">The Caro-Kann Defense (1.e4 c6) is a solid and resilient opening choice.<br>
-    By playing ...d5 early, Black challenges White’s center without weakening their own position.<br>
-    The Caro-Kann is known for leading to slightly passive but extremely solid positions. <br>
-    It often suits players who favor positional play with long-term strategic plans over sharp tactics.
-</p><br>
-</body>
-<img src="caro kann.png" alt="italian"><br>
-<iframe
-width="560"
-height="315"
-src="https://www.youtube.com/embed/rmbU97iftC8"
-title="italian"
-frameboard="0"
-allow="accelometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
-allowfullscreen>
-</iframe>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">OC</div>
+        <div>
+          <h1>Caro-Kann Defense</h1>
+          <p>Solid, resilient play after 1.e4 c6</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" style="margin-top:20px;">
+        <h2>Description</h2>
+        <p>The Caro-Kann Defense (1.e4 c6) is a solid and resilient opening choice. By playing ...d5 early,
+           Black challenges White’s center without creating major pawn weaknesses. It often leads to
+           slightly passive but very durable positions, suited to strategic, positional players.</p>
+      </section>
+
+      <div class="media-grid" style="margin-top:18px;">
+        <!-- Video card -->
+        <article class="media-card video-box" aria-label="Caro-Kann lesson video">
+          <div class="media" role="region" aria-label="Video player">
+            <img class="poster" src="caro kann.png" alt="Caro-Kann poster" />
+            <button class="play-overlay" aria-label="Play video" data-video-id="rmbU97iftC8">▶</button>
+          </div>
+          <div class="meta">
+            <div class="kv">
+              <h2 class="title">Caro-Kann — Lesson</h2>
+              <span class="media-badge">Lesson</span>
+            </div>
+            <p class="caption">Key ideas, typical pawn structures and practical plans.</p>
+          </div>
+        </article>
+
+        <!-- Image card -->
+        <aside class="media-card image-box sidebar" aria-label="Diagram">
+          <div class="media">
+            <img src="caro kann.png" alt="Diagram: Caro-Kann example" />
+          </div>
+          <div class="meta">
+            <h2 class="title">Position Diagram</h2>
+            <p class="caption">A typical structure arising from the Caro-Kann — use for study and drills.</p>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              <a class="btn btn-primary" href="#" role="button">View more</a>
+              <a class="btn" href="caro kann.png" download>Download</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer>
+      <div class="small">© Online Chess Course</div>
+      <div class="small">Made with ♟️</div>
+    </footer>
+  </div>
+
+  <script>
+    // lazy-load YouTube iframe on play
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.play-overlay');
+      if (!btn) return;
+      const container = btn.closest('.media');
+      const id = btn.getAttribute('data-video-id');
+      if (!id || !container) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
+      iframe.title = 'Caro-Kann lesson video';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      container.innerHTML = '';
+      container.appendChild(iframe);
+    });
+  </script>
 </body>
 </html>

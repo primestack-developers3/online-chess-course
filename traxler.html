@@ -1,29 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Traxler</title>
-    <link rel="stylesheet" href="sicilian.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Traxler — Online Chess Course</title>
+  <link rel="stylesheet" href="sicilian.css" />
 </head>
-<header>
-<h1 style="font-size:40px;">Traxler</h1>
-</header>
 <body>
-    <h1 style="color: white;font-size:30px;">Description</h1><br>
-    <p style="color: white;font-size: 20px;">The Traxler Counterattack (or Wilkes-Barre Variation) begins with 1.e4 e5 2.Nf3 Nc6 3.Bc4 Nf6 4.Ng5 Bc5.<br>
-         Instead of defending, Black launches an aggressive counterattack.<br>
-          It leads to chaotic, tactical positions where precise calculation is critical.<br>
-         It's ideal for fearless players who thrive on complications
-</p><br>
-</body>
-<img src="traxler.png" alt="italian"><br>
-<iframe
-width="560"
-height="315"
-src="https://www.youtube.com/embed/v1jkj-HPLdw"
-title="italian"
-frameboard="0"
-allow="accelometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
-allowfullscreen>
-</iframe>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">OC</div>
+        <div>
+          <h1>Traxler</h1>
+          <p>Sharply tactical counterattacks after 1.e4 e5</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" style="margin-top:20px;">
+        <h2>Description</h2>
+        <p>The Traxler Counterattack (Wilkes-Barre Variation) begins with 1.e4 e5 2.Nf3 Nc6 3.Bc4 Nf6 4.Ng5 Bc5.
+           Instead of defending, Black launches an aggressive counterattack. It leads to chaotic, tactical positions
+           where precise calculation is critical. It's ideal for fearless players who thrive on complications.</p>
+      </section>
+
+      <div class="media-grid" style="margin-top:18px;">
+        <!-- Video card -->
+        <article class="media-card video-box" aria-label="Traxler lesson video">
+          <div class="media" role="region" aria-label="Video player">
+            <img class="poster" src="traxler.png" alt="Traxler poster" />
+            <button class="play-overlay" aria-label="Play video" data-video-id="v1jkj-HPLdw">▶</button>
+          </div>
+          <div class="meta">
+            <div class="kv">
+              <h2 class="title">Traxler — Lesson</h2>
+              <span class="media-badge">Lesson</span>
+            </div>
+            <p class="caption">Tactical motifs, traps and practical examples from the Traxler.</p>
+          </div>
+        </article>
+
+        <!-- Image card -->
+        <aside class="media-card image-box sidebar" aria-label="Diagram">
+          <div class="media">
+            <img src="traxler.png" alt="Diagram: Traxler example" />
+          </div>
+          <div class="meta">
+            <h2 class="title">Position Diagram</h2>
+            <p class="caption">Key tactical position from the Traxler Counterattack.</p>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              <a class="btn btn-primary" href="#" role="button">View more</a>
+              <a class="btn" href="traxler.png" download>Download</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer>
+      <div class="small">© Online Chess Course</div>
+      <div class="small">Made with ♟️</div>
+    </footer>
+  </div>
+
+  <script>
+    // lazy-load YouTube iframe on play
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.play-overlay');
+      if (!btn) return;
+      const container = btn.closest('.media');
+      const id = btn.getAttribute('data-video-id');
+      if (!id || !container) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
+      iframe.title = 'Lesson video';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      container.innerHTML = '';
+      container.appendChild(iframe);
+    });
+  </script>
 </body>
 </html>

@@ -1,36 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Italian Game</title>
-    <link rel="stylesheet" href="italian.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Italian Game — Online Chess Course</title>
+  <link rel="stylesheet" href="sicilian.css" />
 </head>
-<header>
-<h1 style="font-size:40px;">Italian Game</h1>
-</header>
 <body>
-    <h1 style="color: white;font-size:30px;">Description</h1><br>
-    <p style="color: white;font-size: 20px;">The Italian Game is a classic chess opening that begins with the moves:<br>
-1. e4 e5 2. Nf3 Nc6 3. Bc4<br>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">OC</div>
+        <div>
+          <h1>Italian Game</h1>
+          <p>Quick development, center control and early pressure on f7</p>
+        </div>
+      </div>
+    </header>
 
-It focuses on quick development, center control, and early pressure on Black's weak f7 square.<br> White’s bishop on c4 targets f7, while the knight on f3 supports the center and eyes g5 for tactical threats.<br>
+    <main>
+      <section class="card" style="margin-top:20px;">
+        <h2>Description</h2>
+        <p>The Italian Game begins 1.e4 e5 2.Nf3 Nc6 3.Bc4 and emphasizes quick development,
+           central control and early pressure on Black's f7 square. It can lead to quiet positional
+           play (Giuoco Piano) or sharp tactics (Two Knights Defense). Typical plans include c3 and d4,
+           rapid castling and coordinated piece play. It’s an instructive opening for all levels.</p>
+      </section>
 
-One of the main responses by Black is 3...Bc5, leading to the Giuoco Piano (“quiet game”), a slower, positional battle.<br> If Black plays 3...Nf6, it leads to the sharper Two Knights Defense, where tactical skirmishes are common.<br>
+      <div class="media-grid" style="margin-top:18px;">
+        <!-- Video card -->
+        <article class="media-card video-box" aria-label="Italian Game lesson video">
+          <div class="media" role="region" aria-label="Video player">
+            <img class="poster" src="italian.png" alt="Italian Game poster" />
+            <button class="play-overlay" aria-label="Play video" data-video-id="qUews8fEGkc">▶</button>
+          </div>
+          <div class="meta">
+            <div class="kv">
+              <h2 class="title">Italian Game — Lesson</h2>
+              <span class="media-badge">Lesson</span>
+            </div>
+            <p class="caption">Fundamentals, main lines and typical motifs.</p>
+          </div>
+        </article>
 
-White often follows up with c3 and d4, aiming to take over the center.<br> The game usually continues with both sides castling kingside, leading to rich middle-game play.<br>
+        <!-- Image card -->
+        <aside class="media-card image-box sidebar" aria-label="Diagram">
+          <div class="media">
+            <img src="italian.png" alt="Diagram: Italian Game example" />
+          </div>
+          <div class="meta">
+            <h2 class="title">Position Diagram</h2>
+            <p class="caption">Reference diagram illustrating common piece placement.</p>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              <a class="btn btn-primary" href="#" role="button">View more</a>
+              <a class="btn" href="italian.png" download>Download</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
 
-The Italian Game is popular with beginners and masters alike because it teaches solid opening principles—control the center, develop pieces, and ensure king safety.<br> It can lead to both quiet positional games or aggressive attacks, depending on the variation chosen.<br>
+    <footer>
+      <div class="small">© Online Chess Course</div>
+      <div class="small">Made with ♟️</div>
+    </footer>
+  </div>
 
-Overall, it’s a versatile and instructive opening that forms a strong foundation for anyone learning or improving at chess.</p><br>
-</body>
-<img src="italian.png" alt="italian"><br>
-<iframe
-width="560"
-height="315"
-src="https://www.youtube.com/embed/qUews8fEGkc"
-title="italian"
-frameboard="0"
-allow="accelometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
-allowfullscreen>
-</iframe>
+  <script>
+    // lazy-load YouTube iframe on play
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.play-overlay');
+      if (!btn) return;
+      const container = btn.closest('.media');
+      const id = btn.getAttribute('data-video-id');
+      if (!id || !container) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
+      iframe.title = 'Lesson video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      container.innerHTML = '';
+      container.appendChild(iframe);
+    });
+  </script>
 </body>
 </html>

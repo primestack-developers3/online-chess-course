@@ -1,28 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Trading in chess</title>
-    <link rel="stylesheet" href="sicilian.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trading pieces — Online Chess Course</title>
+  <link rel="stylesheet" href="sicilian.css" />
 </head>
-<header>
-<h1 style="font-size:40px;">Trading pieces</h1>
-</header>
 <body>
-    <h1 style="color: white;font-size:30px;">Description</h1><br>
-    <p style="color: white;font-size: 20px;">Trading Pieces means exchanging material, typically of equal value.<br>
-         It’s a strategic tool to relieve pressure, simplify into a favorable endgame, or neutralize threats.<br>
-         Strong players use trades to transform the position into one that suits their strengths.
-</p><br>
-</body>
-<img src="trade.png" alt="italian"><br>
-<iframe
-width="560"
-height="315"
-src="https://www.youtube.com/embed/rZb8mXs_QbE"
-title="italian"
-frameboard="0"
-allow="accelometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
-allowfullscreen>
-</iframe>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">OC</div>
+        <div>
+          <h1>Trading Pieces</h1>
+          <p>Simplify, relieve pressure, and steer the game</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" style="margin-top:20px;">
+        <h2>Description</h2>
+        <p>Trading pieces means exchanging material, typically of equal value. It’s a strategic tool to relieve pressure, simplify into a favorable endgame, or neutralize threats. Strong players use trades to transform the position into one that suits their strengths.</p>
+      </section>
+
+      <div class="media-grid" style="margin-top:18px;">
+        <!-- Video card -->
+        <article class="media-card video-box" aria-label="Trading pieces video">
+          <div class="media" role="region" aria-label="Video player">
+            <img class="poster" src="trade.png" alt="Trading pieces poster" />
+            <button class="play-overlay" aria-label="Play video" data-video-id="rZb8mXs_QbE">▶</button>
+          </div>
+          <div class="meta">
+            <div class="kv">
+              <h2 class="title">Trading Pieces — Lesson</h2>
+              <span class="media-badge">Lesson</span>
+            </div>
+            <p class="caption">Practical examples of when and why to exchange material.</p>
+          </div>
+        </article>
+
+        <!-- Image card -->
+        <aside class="media-card image-box sidebar" aria-label="Diagram">
+          <div class="media">
+            <img src="trade.png" alt="Diagram: Trading pieces example" />
+          </div>
+          <div class="meta">
+            <h2 class="title">Position Diagram</h2>
+            <p class="caption">A sample position demonstrating a favorable trade.</p>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              <a class="btn btn-primary" href="#" role="button">View more</a>
+              <a class="btn" href="trade.png" download>Download</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer>
+      <div class="small">© Online Chess Course</div>
+      <div class="small">Made with ♟️</div>
+    </footer>
+  </div>
+
+  <script>
+    // lazy-load YouTube iframe on play
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.play-overlay');
+      if (!btn) return;
+      const container = btn.closest('.media');
+      const id = btn.getAttribute('data-video-id');
+      if (!id || !container) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
+      iframe.title = 'Lesson video';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      container.innerHTML = '';
+      container.appendChild(iframe);
+    });
+  </script>
 </body>
 </html>
