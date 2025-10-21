@@ -7,23 +7,39 @@
     <link rel="stylesheet" href="board.css">
 </head>
 <body>
-    <header>
-        <h1>Interactive Chess Board</h1>
-        <a href="index.html" class="home-link">Back to Home</a>
+    <header class="topbar">
+        <div class="brand">
+            <div class="logo">OC</div>
+            <div>
+                <h1>Interactive Chess Board</h1>
+                <p class="muted">Tap a piece to see legal moves — touch / click to move</p>
+            </div>
+        </div>
+        <nav class="controls">
+            <button id="undo-button" class="btn">Undo</button>
+            <button id="reset-button" class="btn">Reset</button>
+        </nav>
     </header>
+
     <main class="board-layout">
-        <div class="board-wrapper">
-            <div class="ranks"></div>
-            <div id="chessboard"></div>
-            <div class="files"></div>
-        </div><br><br>
-            <button id="undo-button">Undo Move</button>
-        <div id="move-history" class="move-history-container">
+        <div class="board-wrapper" id="board-wrapper">
+            <div class="ranks" aria-hidden="true"></div>
+            <div id="chessboard" class="chessboard" role="grid" aria-label="Chessboard"></div>
+            <div class="files" aria-hidden="true"></div>
+        </div>
+
+        <aside id="move-history" class="move-history">
             <h2>Move History</h2>
             <ol id="move-list"></ol>
-        </div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        </aside>
     </main>
+
+    <footer class="footer">
+        <a href="index.html" class="home-link">Back to Home</a>
+    </footer>
+
     <script src="board.js"></script>
 </body>
 </html>
+
 
