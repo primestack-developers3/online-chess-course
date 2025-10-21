@@ -1,65 +1,132 @@
-<!DOCTYPE html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chess courses</title>
-    <link rel="stylesheet" href="openings.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chess Openings — Online Chess Course</title>
+  <link rel="stylesheet" href="openings.css">
 </head>
 <body>
-<header>
-    <h1>Chess Openings</h1><a href="course.html">
-</header><br><br>
-<a href="italian.html"><div class="italian">
-<img src="italian.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="box-border-text">Italian Game</h1>
-</div></a><br><br>
-<div class="french">
-<a href="french.html">
-<img src="french.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="e5">French Defense</h1>
-</div></a><br><br>
-<a href="carokann.html">
-<div class="carokann">
-<img src="caro kann.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="c6">Caro-Kann Defense</h1>
-</div></a><br><br>
-<a href="sicilian.html">
-<div class="sicilian defense">
-<img src="sicilian.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="c5">Sicilian Defense</h1>
-</div></a><br><br>
-<a href="vienna.html">
-<div class="viennagame">
-<img src="vienna.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="f4">Vienna Game</h1>
-</div></a><br><br>
-<a href="london.html">
-<div class="london">
-<img src="London System.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="d4">Lodon System</h1>
-</div></a><br><br>
-<a href="ruylopez.html">
-<div class="ruylopez">
-<img src="ruy lopez.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="b5">Ruy Lopez</h1>
-</div></a><br><br>
-<a href="fianchetto.html">
-<div class="fianchetto">
-<img src="fianchetto.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="g3">Fian-Chetto</h1>
-</div></a><br><br>
-<a href="danishopening.html">
-<div class="danishopening">
-<img src="danish opening.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="d3">Danish Opening</h1>
-</div></a><br><br>
-<a href="queensgambit.html">
-<div class="queensgambit">
-<img src="queens gambit.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="f42">Queens gambit</h1>
-</div></a><br><br>
-<footer>
-    <a href="index.html"><h1 style="color: white;font-size:60px;">Home</h1></a>
-</footer>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">OC</div>
+      <div class="brand">
+        <h1>Chess Openings</h1>
+        <p class="tag">Practical lessons — clear plans & key ideas</p>
+      </div>
+      <nav class="top-nav" aria-label="Primary">
+        <a class="btn" href="index.html">Home</a>
+        <a class="btn" href="course.html">All Courses</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="grid" aria-label="Openings list">
+      <!-- Card template: keep image names as in your folder -->
+      <a class="card" href="italian.html" data-animate>
+        <img src="italian.png" alt="Italian Game" loading="lazy" />
+        <div class="card-meta">
+          <h2>Italian Game</h2>
+          <p>Quick development and early pressure on f7</p>
+        </div>
+      </a>
+
+      <a class="card" href="french.html" data-animate>
+        <img src="french.png" alt="French Defense" loading="lazy" />
+        <div class="card-meta">
+          <h2>French Defense</h2>
+          <p>Solid, strategic response to 1.e4</p>
+        </div>
+      </a>
+
+      <a class="card" href="carokann.html" data-animate>
+        <img src="caro kann.png" alt="Caro-Kann" loading="lazy" />
+        <div class="card-meta">
+          <h2>Caro‑Kann</h2>
+          <p>Durable pawn structures and counterplay</p>
+        </div>
+      </a>
+
+      <a class="card" href="sicilian.html" data-animate>
+        <img src="sicilian.png" alt="Sicilian Defense" loading="lazy" />
+        <div class="card-meta">
+          <h2>Sicilian Defense</h2>
+          <p>Sharp counterattacking play for Black</p>
+        </div>
+      </a>
+
+      <a class="card" href="vienna.html" data-animate>
+        <img src="vienna.png" alt="Vienna Game" loading="lazy" />
+        <div class="card-meta">
+          <h2>Vienna Game</h2>
+          <p>Flexible and tactical early play</p>
+        </div>
+      </a>
+
+      <a class="card" href="london.html" data-animate>
+        <img src="London System.png" alt="London System" loading="lazy" />
+        <div class="card-meta">
+          <h2>London System</h2>
+          <p>System-based, easy to learn plans</p>
+        </div>
+      </a>
+
+      <a class="card" href="ruylopez.html" data-animate>
+        <img src="ruy lopez.png" alt="Ruy Lopez" loading="lazy" />
+        <div class="card-meta">
+          <h2>Ruy Lopez</h2>
+          <p>Classical development and long-term pressure</p>
+        </div>
+      </a>
+
+      <a class="card" href="fianchetto.html" data-animate>
+        <img src="fianchetto.png" alt="Fianchetto" loading="lazy" />
+        <div class="card-meta">
+          <h2>Fianchetto</h2>
+          <p>Long diagonal control and strategic play</p>
+        </div>
+      </a>
+
+      <a class="card" href="danishopening.html" data-animate>
+        <img src="danish opening.png" alt="Danish Gambit" loading="lazy" />
+        <div class="card-meta">
+          <h2>Danish Gambit</h2>
+          <p>All‑in sacrificial attacking ideas</p>
+        </div>
+      </a>
+
+      <a class="card" href="queensgambit.html" data-animate>
+        <img src="queens gambit.png" alt="Queen's Gambit" loading="lazy" />
+        <div class="card-meta">
+          <h2>Queen's Gambit</h2>
+          <p>Classical centre play and rich strategy</p>
+        </div>
+      </a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>© Online Chess Course — <a href="index.html">Home</a></div>
+  </footer>
+
+  <script>
+    // reveal on scroll + gentle stagger
+    (function(){
+      const items = Array.from(document.querySelectorAll('[data-animate]'));
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            const el = e.target;
+            el.style.transitionDelay = (items.indexOf(el) * 60) + 'ms';
+            el.classList.add('in');
+            io.unobserve(el);
+          }
+        });
+      }, {threshold: 0.12});
+      items.forEach(i=>io.observe(i));
+    })();
+  </script>
 </body>
 </html>
+

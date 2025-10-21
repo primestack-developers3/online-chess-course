@@ -1,36 +1,102 @@
-<!DOCTYPE html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chess courses</title>
-    <link rel="stylesheet" href="midlegame.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chess Middlegames — Online Chess Course</title>
+  <link rel="stylesheet" href="midlegame.css" />
 </head>
 <body>
-<header>
-    <h1>Chess Middlegames</h1>
-</header><br><br>
-<a href="friedliver.html"><div class="friedliver">
-<img src="friedliver.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="box-border-text">Fried Liver</h1>
-</div></a><br><br>
-<a href="traxler.html"><div class="traxler">
-<img src="traxler.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="traxler2">Traxler</h1>
-</div></a><br><br>
-<a href="pawnwall.html"><div class="pawn">
-<img src="pawnwall.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="wall">Pawn Wall</h1>
-</div></a><br><br>
-<a href="arabianknight.html"><div class="arabian">
-<img src="arabianknight.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="knight">Arabian Knight</h1>
-</div></a><br><br>
-<a href="trade.html"><div class="trade">
-<img src="trade.png" alt="italian" class="images">
-<h1 style="font-size:40px;" class="pieces">Trading Pieces</h1>
-</div></a><br><br>
-<footer>
-    <a href="index.html"><h1 style="color: white;font-size:60px;">Home</h1></a>
-</footer>
+  <div class="accent-shape" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">OC</div>
+      <div class="brand">
+        <h1>Chess Middlegames</h1>
+        <p class="tag">Tactics, patterns & practical plans</p>
+      </div>
+      <nav class="top-nav" aria-label="Primary">
+        <a class="btn" href="index.html">Home</a>
+        <a class="btn" href="openings.html">Openings</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid" aria-label="Middlegame lessons">
+      <a class="card" href="friedliver.html" data-animate>
+        <img src="friedliver.png" alt="Fried Liver" loading="lazy" />
+        <div class="card-meta">
+          <h2>Fried Liver</h2>
+          <p>Sharp tactical assault from the Italian</p>
+        </div>
+      </a>
+
+      <a class="card" href="traxler.html" data-animate>
+        <img src="traxler.png" alt="Traxler" loading="lazy" />
+        <div class="card-meta">
+          <h2>Traxler</h2>
+          <p>Wild counterattacking possibilities and traps</p>
+        </div>
+      </a>
+
+      <a class="card" href="pawnwall.html" data-animate>
+        <img src="pawnwall.png" alt="Pawn Wall" loading="lazy" />
+        <div class="card-meta">
+          <h2>Pawn Wall</h2>
+          <p>Structure and plans for closed positions</p>
+        </div>
+      </a>
+
+      <a class="card" href="arabianknight.html" data-animate>
+        <img src="arabianknight.png" alt="Arabian Knight" loading="lazy" />
+        <div class="card-meta">
+          <h2>Arabian Knight</h2>
+          <p>Classic mating patterns with rook + knight</p>
+        </div>
+      </a>
+
+      <a class="card" href="trade.html" data-animate>
+        <img src="trade.png" alt="Trading Pieces" loading="lazy" />
+        <div class="card-meta">
+          <h2>Trading Pieces</h2>
+          <p>When to trade and how to convert endgames</p>
+        </div>
+      </a>
+    </section>
+
+    <footer class="site-footer">
+      <div>© Online Chess Course — <a href="index.html">Home</a></div>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      const items = Array.from(document.querySelectorAll('[data-animate]'));
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            const el = e.target;
+            el.style.transitionDelay = (items.indexOf(el) * 60) + 'ms';
+            el.classList.add('in');
+            io.unobserve(el);
+          }
+        });
+      }, {threshold: 0.12});
+      items.forEach(i=>io.observe(i));
+
+      // smooth scroll for hash links
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', e=>{
+          e.preventDefault();
+          const id = a.getAttribute('href').slice(1);
+          const t = document.getElementById(id);
+          if(t) t.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
+
