@@ -3,43 +3,1094 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Board and Bot</title>
-    <link rel="stylesheet" href="board.css">
+    <title>Sleek Functional Chess Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        
+        /* --- Global Dark Theme & Layout --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #e2e8f0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* --- Board and Square Geometry (FORCED SQUARE SHAPE) --- */
+        .board-container {
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 500px; 
+            max-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 8px solid #333; /* Darker frame */
+            flex-shrink: 0;
+        }
+        #chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr); /* CRITICAL: Ensures perfect squares */
+            width: 100%;
+            height: 100%;
+        }
+        .square {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            transition: background-color 0.2s;
+        }
+
+        /* --- Custom Board Colors (Muted Dark Theme) --- */
+        .square-light { background-color: #f0d9b5; } /* Light Beige */
+        .square-dark { background-color: #b58863; } /* Muted Brown */
+        
+        /* State Indicators */
+        .selected-square { background-color: #4c4f92 !important; } /* Muted Purple/Blue Selection */
+        .square-check { background-color: #f97316 !important; } /* Orange-500 for Check */
+        .square-checkmate { background-color: #ef4444 !important; } /* Red-500 for Checkmate */
+        
+        /* --- Piece Styling and Animation --- */
+        .piece {
+            font-size: clamp(30px, 7vmin, 45px); /* Responsive font size */
+            cursor: grab;
+            user-select: none;
+            position: relative;
+            transition: transform 0.1s ease-out; /* Smooth movement animation */
+        }
+        .piece:active {
+            transform: scale(1.05);
+        }
+        .white-piece { color: #ffffff; text-shadow: 0 0 2px rgba(0,0,0,0.5); }
+        .black-piece { color: #000000; text-shadow: 0 0 2px rgba(255,255,255,0.5); }
+        
+        /* Visual cue for Legal Moves */
+        .possible-move {
+            cursor: pointer;
+        }
+        .possible-move::after {
+            content: '';
+            display: block;
+            width: 25%;
+            height: 25%;
+            background-color: rgba(76, 79, 146, 0.9); /* Dark Blue dot */
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            transition: all 0.1s;
+        }
+        .piece + .possible-move::after {
+            /* Red ring for captures */
+            background-color: transparent;
+            border: 4px solid rgba(255, 69, 0, 0.8); /* Orange-Red ring */
+            width: 90%;
+            height: 90%;
+            box-sizing: border-box;
+        }
+
+        /* --- Promotion Dialog Styles --- */
+        #promotion-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+        .promotion-dialog {
+            background-color: #1e293b;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.5);
+            text-align: center;
+        }
+        .promotion-piece-button {
+            font-size: 3rem;
+            width: 80px;
+            height: 80px;
+            margin: 0.5rem;
+            border-radius: 8px;
+            background-color: #334155;
+            color: #ffffff;
+            transition: background-color 0.15s;
+            cursor: pointer;
+        }
+        .promotion-piece-button:hover {
+            background-color: #475569;
+        }
+        
+        /* --- Layout Adjustments for Mobile and Desktop --- */
+        .main-layout-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+        }
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        @media (min-width: 1024px) { 
+            .content-area {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: center;
+            }
+            #moves-log-container {
+                max-width: 300px;
+                height: 500px; 
+            }
+        }
+    </style>
 </head>
-<body>
-    <header class="topbar">
-        <div class="brand">
-            <div class="logo">OC</div>
-            <div>
-                <h1>Interactive Chess Board</h1>
-                <p class="muted">Tap a piece to see legal moves — touch / click to move</p>
+<body class="p-4">
+
+    <!-- Overall Main Container -->
+    <div class="main-layout-container">
+
+        <!-- Header/Status Bar -->
+        <header class="flex flex-col sm:flex-row justify-between items-center mb-6 p-4 bg-gray-800 rounded-xl shadow-2xl">
+            <h1 class="text-3xl font-bold text-orange-400 mb-2 sm:mb-0">Chess Battle</h1>
+            
+            <!-- Turn Indicator & Scoreboard (Combined Status) -->
+            <div class="flex items-center space-x-4">
+                <p id="turn-indicator" class="text-lg font-extrabold p-2 rounded-lg bg-indigo-600 text-white shadow-md transition duration-300">White's Turn</p>
+                <div id="scoreboard" class="flex space-x-2 text-sm font-semibold">
+                    <span id="white-score" class="p-1 rounded bg-white text-gray-800 transition duration-300">W: +0</span>
+                    <span id="black-score" class="p-1 rounded bg-gray-800 text-white border border-gray-600 transition duration-300">B: +0</span>
+                </div>
+            </div>
+
+            <!-- Controls (Undo/Redo) -->
+            <div class="flex space-x-3 mt-3 sm:mt-0">
+                <button id="undo-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-full transition duration-150 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                    &#x21B6; Undo
+                </button>
+                <button id="redo-button" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-150 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                    &#x21B7; Redo
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area (Board and Log Side-by-Side on Desktop) -->
+        <div class="content-area">
+            
+            <!-- Chess Board (Left) -->
+            <div class="board-container">
+                <div id="chess-board">
+                    <!-- Squares generated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Moves Log (Right) -->
+            <div id="moves-log-container" class="w-full lg:w-1/3 flex flex-col space-y-4 p-5 bg-gray-800 rounded-xl shadow-2xl">
+                <h2 class="text-2xl font-bold text-orange-400 border-b pb-2">Move History</h2>
+                <div id="message-box" class="text-center text-red-400 font-semibold h-6"></div>
+                <div id="moves-log" class="overflow-y-auto flex-1 p-2 border border-gray-700 rounded-lg bg-gray-900 max-h-96 lg:max-h-full">
+                    <p class="text-gray-500 italic text-center mt-2">No moves yet.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- Promotion Selection Overlay (Custom Dialog) -->
+    <div id="promotion-overlay">
+        <div class="promotion-dialog">
+            <h3 class="text-xl font-bold mb-4 text-orange-300">Promote Pawn to:</h3>
+            <div id="promotion-buttons">
+                <!-- Buttons injected by JS -->
             </div>
         </div>
-        <nav class="controls">
-            <button id="undo-button" class="btn">Undo</button>
-            <button id="reset-button" class="btn">Reset</button>
-        </nav>
-    </header>
+    </div>
 
-    <main class="board-layout">
-        <div class="board-wrapper" id="board-wrapper">
-            <div class="ranks" aria-hidden="true"></div>
-            <div id="chessboard" class="chessboard" role="grid" aria-label="Chessboard"></div>
-            <div class="files" aria-hidden="true"></div>
-        </div>
+    <script>
+        // --- Game Constants and Helpers ---
 
-        <aside id="move-history" class="move-history">
-            <h2>Move History</h2>
-            <ol id="move-list"></ol>
-        </aside>
-    </main>
+        const BOARD_SIZE = 8;
+        const toAlgebraic = (index) => {
+            const file = String.fromCharCode('a'.charCodeAt(0) + (index % BOARD_SIZE));
+            const rank = BOARD_SIZE - Math.floor(index / BOARD_SIZE);
+            return file + rank;
+        };
+        const getPieceColor = (piece) => {
+            if (!piece) return null;
+            return piece === piece.toUpperCase() ? 'white' : 'black';
+        };
 
-    <footer class="footer">
-        <a href="index.html" class="home-link">Back to Home</a>
-    </footer>
+        const initialBoard = [
+            'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
+            'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
+            '',  '',  '',  '',  '',  '',  '',  '',
+            '',  '',  '',  '',  '',  '',  '',  '',
+            '',  '',  '',  '',  '',  '',  '',  '',
+            '',  '',  '',  '',  '',  '',  '',  '',
+            'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+            'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
+        ];
 
-    <script src="board.js"></script>
+        const PIECE_SYMBOLS = {
+            'K': '&#x2654;', 'Q': '&#x2655;', 'R': '&#x2656;', 'B': '&#x2657;', 'N': '&#x2658;', 'P': '&#x2659;',
+            'k': '&#x265A;', 'q': '&#x265B;', 'r': '&#x265C;', 'b': '&#x265D;', 'n': '&#x265E;', 'p': '&#x265F;'
+        };
+        // Notation for move logging
+        const NOTATION_SYMBOLS = { 'K': 'K', 'Q': 'Q', 'R': 'R', 'B': 'B', 'N': 'N', 'P': '' };
+        const PIECE_VALUES = { 'P': 1, 'N': 3, 'B': 3, 'R': 5, 'Q': 9, 'K': 0, 'p': 1, 'n': 3, 'b': 3, 'r': 5, 'q': 9, 'k': 0 };
+        const DIRECTION_VECTORS = {
+            'straight': [-8, 8, -1, 1], 
+            'diagonal': [-9, -7, 7, 9], 
+            'knight': [-17, -15, -10, -6, 6, 10, 15, 17] 
+        };
+
+        const elements = {
+            board: document.getElementById('chess-board'),
+            undoBtn: document.getElementById('undo-button'),
+            redoBtn: document.getElementById('redo-button'),
+            turnIndicator: document.getElementById('turn-indicator'),
+            messageBox: document.getElementById('message-box'),
+            whiteScore: document.getElementById('white-score'),
+            blackScore: document.getElementById('black-score'),
+            movesLog: document.getElementById('moves-log'),
+            promotionOverlay: document.getElementById('promotion-overlay'),
+            promotionButtons: document.getElementById('promotion-buttons')
+        };
+
+        // --- Core Game State Management (Updated with Castling/EP Rights) ---
+        let gameState = {
+            board: [...initialBoard],
+            turn: 'white',
+            history: [],
+            future: [],
+            movesLog: [],
+            // Castling rights: wK (White King-side), wQ (White Queen-side), etc.
+            castlingRights: { wK: true, wQ: true, bK: true, bQ: true },
+            // En Passant target square index (e.g., 16 for d6 if a pawn moved from d2 to d4)
+            enPassantTarget: -1 
+        };
+        
+        // --- Board Rendering Functions ---
+
+        const isLightSquare = (index) => {
+            const row = Math.floor(index / BOARD_SIZE);
+            const col = index % BOARD_SIZE;
+            return (row + col) % 2 === 0;
+        };
+        
+        const clearHighlights = () => {
+            document.querySelectorAll('.square.selected-square').forEach(el => el.classList.remove('selected-square'));
+            document.querySelectorAll('.square.possible-move').forEach(el => el.classList.remove('possible-move'));
+        };
+
+        const highlightLegalMoves = (legalMoves) => {
+            legalMoves.forEach(index => {
+                const squareEl = elements.board.querySelector(`[data-index="${index}"]`);
+                if (squareEl) {
+                    squareEl.classList.add('possible-move');
+                }
+            });
+        };
+
+        const renderBoard = () => {
+            elements.board.innerHTML = '';
+            
+            // Get status for the current player's King
+            const kingColor = gameState.turn;
+            const kingIndex = getKingIndex(gameState.board, kingColor);
+            const status = checkGameStatus(false); // Get status without rendering messages yet
+
+            gameState.board.forEach((piece, index) => {
+                const square = document.createElement('div');
+                square.className = `square transition-colors duration-200`;
+                
+                // Base color
+                square.classList.add(isLightSquare(index) ? 'square-light' : 'square-dark');
+                
+                // Add Check/Checkmate styling if this square is the King's square
+                if (index === kingIndex && getPieceColor(piece) === kingColor) {
+                    if (status === 'checkmate') {
+                        square.classList.remove('square-light', 'square-dark', 'square-check');
+                        square.classList.add('square-checkmate');
+                    } else if (status === 'check') {
+                        square.classList.remove('square-light', 'square-dark', 'square-checkmate');
+                        square.classList.add('square-check');
+                    } else {
+                        square.classList.remove('square-check', 'square-checkmate');
+                    }
+                } else {
+                    square.classList.remove('square-check', 'square-checkmate');
+                }
+
+                square.dataset.index = index;
+                square.dataset.square = toAlgebraic(index);
+
+                if (piece) {
+                    const pieceEl = document.createElement('span');
+                    pieceEl.className = `piece transition-transform`;
+                    pieceEl.classList.add(getPieceColor(piece) === 'white' ? 'white-piece' : 'black-piece');
+                    pieceEl.innerHTML = PIECE_SYMBOLS[piece];
+                    pieceEl.dataset.piece = piece;
+                    pieceEl.dataset.index = index;
+                    square.appendChild(pieceEl);
+                }
+                elements.board.appendChild(square);
+            });
+            updateUI(status); // Update the rest of the UI including messages
+        };
+        
+        // --- Moves Log Rendering ---
+
+        const renderMovesLog = () => {
+            const moves = gameState.movesLog;
+            if (moves.length === 0) {
+                elements.movesLog.innerHTML = '<p class="text-gray-500 italic text-center mt-2">No moves yet.</p>';
+                return;
+            }
+            
+            let html = '<div class="flex flex-wrap text-sm font-medium gap-x-3">';
+            for (let i = 0; i < moves.length; i++) {
+                const move = moves[i];
+                const isWhiteMove = i % 2 === 0;
+                
+                if (isWhiteMove) {
+                    const moveNumber = Math.floor(i / 2) + 1;
+                    html += `<span class="w-full text-base font-semibold mt-2 text-gray-400">${moveNumber}.</span>`;
+                    html += `<span class="p-1 rounded-md bg-gray-700 text-white shadow-sm">${move}</span>`;
+                } else {
+                    html += `<span class="p-1 rounded-md bg-gray-600 text-white shadow-sm">${move}</span>`;
+                }
+            }
+            html += '</div>';
+            elements.movesLog.innerHTML = html;
+            elements.movesLog.scrollTop = elements.movesLog.scrollHeight;
+        };
+
+
+        // --- Scoreboard Logic ---
+
+        const calculateMaterialScore = () => {
+            // ... (Same as previous version, omitted for brevity) ...
+            let whiteMaterial = 0;
+            let blackMaterial = 0;
+
+            gameState.board.forEach(piece => {
+                if (!piece) return;
+                const value = PIECE_VALUES[piece];
+                if (getPieceColor(piece) === 'white') {
+                    whiteMaterial += value;
+                } else {
+                    blackMaterial += value;
+                }
+            });
+
+            const difference = whiteMaterial - blackMaterial;
+
+            if (difference > 0) {
+                elements.whiteScore.textContent = `W: +${difference}`;
+                elements.blackScore.textContent = `B: -${difference}`;
+                elements.whiteScore.className = "p-1 rounded bg-green-500 text-white transition duration-300";
+                elements.blackScore.className = "p-1 rounded bg-gray-800 text-white border border-gray-600 transition duration-300";
+            } else if (difference < 0) {
+                const absDiff = Math.abs(difference);
+                elements.whiteScore.textContent = `W: -${absDiff}`;
+                elements.blackScore.textContent = `B: +${absDiff}`;
+                elements.whiteScore.className = "p-1 rounded bg-white text-gray-800 transition duration-300";
+                elements.blackScore.className = "p-1 rounded bg-green-500 text-white transition duration-300";
+            } else {
+                elements.whiteScore.textContent = `W: +0`;
+                elements.blackScore.textContent = `B: +0`;
+                elements.whiteScore.className = "p-1 rounded bg-white text-gray-800 transition duration-300";
+                elements.blackScore.className = "p-1 rounded bg-gray-800 text-white border border-gray-600 transition duration-300";
+            }
+        };
+
+        // --- Undo/Redo Logic ---
+
+        const saveState = () => {
+            const stateToSave = {
+                board: [...gameState.board],
+                turn: gameState.turn,
+                movesLog: [...gameState.movesLog],
+                castlingRights: { ...gameState.castlingRights },
+                enPassantTarget: gameState.enPassantTarget
+            };
+            // Only push if it's a different state than the last
+            if (gameState.history.length === 0 || JSON.stringify(stateToSave.board) !== JSON.stringify(gameState.history[gameState.history.length - 1].board)) {
+                 gameState.history.push(stateToSave);
+            }
+            gameState.future = []; 
+        };
+
+        const loadState = (state) => {
+            gameState.board = [...state.board];
+            gameState.turn = state.turn;
+            gameState.movesLog = [...state.movesLog];
+            gameState.castlingRights = { ...state.castlingRights };
+            gameState.enPassantTarget = state.enPassantTarget;
+            renderBoard();
+        };
+
+        const undoMove = () => {
+            clearHighlights();
+            if (gameState.history.length <= 1) return; 
+            
+            // Push the current state to future stack for redo
+            gameState.future.push({
+                board: [...gameState.board],
+                turn: gameState.turn,
+                movesLog: [...gameState.movesLog],
+                castlingRights: { ...gameState.castlingRights },
+                enPassantTarget: gameState.enPassantTarget
+            });
+            
+            gameState.history.pop(); 
+            const prevState = gameState.history[gameState.history.length - 1]; 
+            loadState(prevState);
+            updateUI();
+        };
+
+        const redoMove = () => {
+            clearHighlights();
+            if (gameState.future.length === 0) return;
+            const nextState = gameState.future.pop();
+            gameState.history.push(nextState); 
+            loadState(nextState);
+            updateUI();
+        };
+
+
+        // --- Legal Move Engine (Refined) ---
+
+        const isOpponent = (piece, color) => {
+            if (!piece) return false;
+            return getPieceColor(piece) !== color;
+        };
+        const getRank = (index) => BOARD_SIZE - Math.floor(index / BOARD_SIZE);
+        const getFile = (index) => index % BOARD_SIZE;
+        const isWithinBounds = (index) => index >= 0 && index < 64;
+
+        /**
+         * Generates moves for sliding (R, B, Q) and fixed (K, N) pieces,
+         * incorporating crucial wrapping and 1-step logic.
+         */
+        const getSlidingMoves = (board, startIndex, piece, vectors) => {
+            const moves = [];
+            const pieceColor = getPieceColor(piece);
+            const pieceType = piece.toUpperCase();
+            const isKingOrKnight = pieceType === 'K' || pieceType === 'N';
+
+            for (const delta of vectors) {
+                let current = startIndex + delta;
+                let previous = startIndex; // Track previous position for wrapping check
+
+                while (isWithinBounds(current)) {
+                    
+                    const targetPiece = board[current];
+                    
+                    // --- Wrapping Check ---
+                    const prevRank = Math.floor(previous / BOARD_SIZE);
+                    const currRank = Math.floor(current / BOARD_SIZE);
+                    const prevFile = previous % BOARD_SIZE;
+                    const currFile = current % BOARD_SIZE;
+                    
+                    // 1. Horizontal move check (delta 1 or -1): Must stay on the same rank
+                    if (Math.abs(delta) === 1 && prevRank !== currRank) {
+                        break; 
+                    }
+                    
+                    // 2. Diagonal/Knight move check: Prevents wrapping from one side of the board to the other.
+                    if (Math.abs(getFile(current) - getFile(previous)) > 2) {
+                         break;
+                    }
+                    if (Math.abs(getFile(current) - getFile(previous)) > 1 && pieceType !== 'N') {
+                        // This handles diagonal wraps. A non-knight move should only change file by 0 or 1.
+                        break;
+                    }
+
+                    // --- Blocking/Capture Logic ---
+                    if (targetPiece && getPieceColor(targetPiece) === pieceColor) {
+                        break; // Blocked by own piece
+                    }
+                    moves.push(current);
+                    if (targetPiece && isOpponent(targetPiece, pieceColor)) {
+                        break; // Capture opponent, stop sliding
+                    }
+
+                    // --- King/Knight: stop after 1 step ---
+                    if (isKingOrKnight) break; 
+
+                    previous = current; // Update previous for the next iteration
+                    current += delta;
+                }
+            }
+            return moves;
+        };
+
+        const getPawnMoves = (board, index, color) => {
+            const moves = [];
+            const rank = getRank(index);
+            const direction = color === 'white' ? -BOARD_SIZE : BOARD_SIZE;
+            const startRank = color === 'white' ? 2 : 7;
+
+            // 1. Forward move
+            const forwardOne = index + direction;
+            if (isWithinBounds(forwardOne) && !board[forwardOne]) {
+                moves.push(forwardOne);
+                
+                // 2. Double move
+                const forwardTwo = index + 2 * direction;
+                if (rank === startRank && isWithinBounds(forwardTwo) && !board[forwardTwo]) {
+                    moves.push(forwardTwo);
+                }
+            }
+
+            // 3. Captures
+            const captureDeltas = [direction - 1, direction + 1];
+            for (const delta of captureDeltas) {
+                const targetIndex = index + delta;
+                if (isWithinBounds(targetIndex) && isOpponent(board[targetIndex], color)) {
+                    // Simple file check to prevent corner wrapping
+                    if (Math.abs(getFile(targetIndex) - getFile(index)) === 1) {
+                         moves.push(targetIndex);
+                    }
+                }
+            }
+            // NOTE: En Passant generation is omitted for simplicity in moves generation, but target is tracked.
+            return moves;
+        };
+
+        // Helper function to check if a move places the king in check
+        const testMoveForCheck = (testBoard, fromIndex, toIndex, pieceColor) => {
+            const piece = testBoard[fromIndex];
+            const capturedPiece = testBoard[toIndex];
+            testBoard[toIndex] = piece;
+            testBoard[fromIndex] = '';
+            
+            const isSafe = !isKingInCheck(testBoard, pieceColor);
+
+            // Restore board state
+            testBoard[fromIndex] = piece;
+            testBoard[toIndex] = capturedPiece;
+
+            return isSafe;
+        };
+
+        const getCastlingMoves = (board, kingIndex, color) => {
+            const moves = [];
+            const rights = gameState.castlingRights;
+            const kingChar = color === 'white' ? 'K' : 'k';
+            const rookChar = color === 'white' ? 'R' : 'r';
+
+            // Cannot castle if in check
+            if (isKingInCheck(board, color)) return moves;
+
+            // --- King-side (Short) ---
+            const kSideRight = color === 'white' ? rights.wK : rights.bK;
+            const kRookIndex = color === 'white' ? 63 : 7;
+            const kRookPos = color === 'white' ? 63 : 7;
+            const kPath = color === 'white' ? [61, 62] : [5, 6];
+            const kTarget = color === 'white' ? 62 : 6;
+            
+            if (kSideRight && board[kRookPos] === rookChar) {
+                if (!board[kPath[0]] && !board[kPath[1]]) { // Path clear
+                    // King cannot pass through or land on an attacked square
+                    const attackerColor = color === 'white' ? 'black' : 'white';
+                    if (!isSquareAttacked(board, kingIndex, attackerColor) && 
+                        !isSquareAttacked(board, kPath[0], attackerColor) &&
+                        !isSquareAttacked(board, kTarget, attackerColor)) {
+                        moves.push(kTarget);
+                    }
+                }
+            }
+
+            // --- Queen-side (Long) ---
+            const qSideRight = color === 'white' ? rights.wQ : rights.bQ;
+            const qRookPos = color === 'white' ? 56 : 0;
+            const qPath = color === 'white' ? [57, 58, 59] : [1, 2, 3];
+            const qTarget = color === 'white' ? 58 : 2; 
+
+            if (qSideRight && board[qRookPos] === rookChar) {
+                if (!board[qPath[0]] && !board[qPath[1]] && !board[qPath[2]]) { // Path clear
+                    // King cannot pass through or land on an attacked square
+                    const attackerColor = color === 'white' ? 'black' : 'white';
+                    if (!isSquareAttacked(board, kingIndex, attackerColor) && 
+                        !isSquareAttacked(board, qPath[1], attackerColor) && // C-file
+                        !isSquareAttacked(board, qTarget, attackerColor)) { // B-file 
+                        moves.push(qTarget);
+                    }
+                }
+            }
+            return moves;
+        };
+
+
+        const generatePseudoLegalMoves = (board, index) => {
+            const piece = board[index];
+            if (!piece) return [];
+            const color = getPieceColor(piece);
+            const type = piece.toUpperCase();
+            let moves = [];
+
+            switch (type) {
+                case 'P': moves = getPawnMoves(board, index, color); break;
+                case 'N': moves = getSlidingMoves(board, index, piece, DIRECTION_VECTORS.knight); break;
+                case 'B': moves = getSlidingMoves(board, index, piece, DIRECTION_VECTORS.diagonal); break;
+                case 'R': moves = getSlidingMoves(board, index, piece, DIRECTION_VECTORS.straight); break;
+                case 'Q': moves = [...getSlidingMoves(board, index, piece, DIRECTION_VECTORS.straight), ...getSlidingMoves(board, index, piece, DIRECTION_VECTORS.diagonal)]; break;
+                case 'K':
+                    const kingVectors = [...DIRECTION_VECTORS.straight, ...DIRECTION_VECTORS.diagonal];
+                    moves = getSlidingMoves(board, index, piece, kingVectors);
+                    moves.push(...getCastlingMoves(board, index, color));
+                    break;
+            }
+            return moves;
+        };
+
+        const getKingIndex = (board, color) => board.findIndex(p => p === (color === 'white' ? 'K' : 'k'));
+
+        const isSquareAttacked = (board, targetIndex, attackerColor) => {
+            const opponentPieces = board.map((p, i) => ({ piece: p, index: i }))
+                                        .filter(item => getPieceColor(item.piece) === attackerColor);
+
+            for (const { piece, index } of opponentPieces) {
+                // When calculating attacks, we must look at the 'pseudo' moves of the attacker
+                // However, we must ensure we don't use the King's castling moves here, or pawn's non-capturing moves.
+                
+                let moves;
+                const type = piece.toUpperCase();
+                
+                if (type === 'P') {
+                    // Only check pawn captures for attack generation
+                    const direction = attackerColor === 'white' ? -BOARD_SIZE : BOARD_SIZE;
+                    const captureDeltas = [direction - 1, direction + 1];
+                    moves = captureDeltas.map(d => index + d).filter(i => isWithinBounds(i) && Math.abs(getFile(i) - getFile(index)) === 1);
+                } else if (type === 'K') {
+                    // Only standard king moves, no castling check
+                    const kingVectors = [...DIRECTION_VECTORS.straight, ...DIRECTION_VECTORS.diagonal];
+                    moves = getSlidingMoves(board, index, piece, kingVectors);
+                } else {
+                    moves = generatePseudoLegalMoves(board, index); // Use standard generation for others
+                }
+
+                if (moves.includes(targetIndex)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        const isKingInCheck = (board, kingColor) => {
+            const kingIndex = getKingIndex(board, kingColor);
+            if (kingIndex === -1) return false;
+            const attackerColor = kingColor === 'white' ? 'black' : 'white';
+            return isSquareAttacked(board, kingIndex, attackerColor);
+        };
+        
+        const generateLegalMoves = (startIndex) => {
+            const piece = gameState.board[startIndex];
+            const pieceColor = getPieceColor(piece);
+
+            const pseudoMoves = generatePseudoLegalMoves(gameState.board, startIndex);
+
+            const legalMoves = pseudoMoves.filter(toIndex => {
+                const testBoard = [...gameState.board];
+                
+                // --- Special check for Castling (King moves 2 squares) ---
+                const pieceType = piece.toUpperCase();
+                if (pieceType === 'K' && Math.abs(toIndex - startIndex) === 2) {
+                    // Castling moves are already validated against passing through check in getCastlingMoves.
+                    // We only need to ensure the final position is safe, but since the King would move 
+                    // two squares, testMoveForCheck already covers the final position check.
+                    return testMoveForCheck(testBoard, startIndex, toIndex, pieceColor);
+                }
+                
+                // --- Standard Move check ---
+                return testMoveForCheck(testBoard, startIndex, toIndex, pieceColor);
+            });
+
+            return legalMoves;
+        };
+
+        const hasAnyLegalMoves = (board, color) => {
+            for (let i = 0; i < 64; i++) {
+                const piece = board[i];
+                if (getPieceColor(piece) === color) {
+                    if (generateLegalMoves(i).length > 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        // --- Promotion Logic ---
+        let pendingPromotion = null; // Stores the index of the pawn to be promoted
+
+        const showPromotionDialog = (toIndex) => {
+            pendingPromotion = toIndex;
+            const color = gameState.turn === 'white' ? 'white' : 'black';
+            const pieces = color === 'white' ? ['Q', 'R', 'B', 'N'] : ['q', 'r', 'b', 'n'];
+            
+            elements.promotionButtons.innerHTML = '';
+            
+            pieces.forEach(pieceChar => {
+                const button = document.createElement('button');
+                button.className = `promotion-piece-button ${color}-piece`;
+                button.innerHTML = PIECE_SYMBOLS[pieceChar];
+                button.dataset.piece = pieceChar;
+                button.onclick = () => selectPromotionPiece(pieceChar);
+                elements.promotionButtons.appendChild(button);
+            });
+
+            elements.promotionOverlay.style.display = 'flex';
+        };
+
+        const selectPromotionPiece = (pieceChar) => {
+            if (pendingPromotion === null) return;
+
+            // Apply the promoted piece to the board
+            gameState.board[pendingPromotion] = pieceChar;
+            
+            // Generate the correct notation (e.g., a8=Q)
+            const lastMoveIndex = gameState.movesLog.length - 1;
+            gameState.movesLog[lastMoveIndex] += `=${pieceChar.toUpperCase()}`;
+            
+            // Check for check/checkmate again after promotion
+            const nextTurnColor = gameState.turn;
+            const isInCheck = isKingInCheck(gameState.board, nextTurnColor);
+            
+            if (isInCheck) {
+                if (!hasAnyLegalMoves(gameState.board, nextTurnColor)) {
+                     gameState.movesLog[lastMoveIndex] += '#'; // Checkmate symbol
+                } else {
+                     gameState.movesLog[lastMoveIndex] += '+'; // Check symbol
+                }
+            }
+            
+            // Update history and UI
+            gameState.history.push({
+                board: [...gameState.board],
+                turn: gameState.turn,
+                movesLog: [...gameState.movesLog],
+                castlingRights: { ...gameState.castlingRights },
+                enPassantTarget: gameState.enPassantTarget
+            });
+            gameState.future = []; 
+
+            elements.promotionOverlay.style.display = 'none';
+            pendingPromotion = null;
+            renderBoard();
+        };
+
+
+        // --- Game Flow and Move Handling ---
+        
+        /**
+         * Checks the current game status and updates the UI message box.
+         */
+        const checkGameStatus = (updateMessages = true) => {
+            const currentColor = gameState.turn;
+            const isInCheck = isKingInCheck(gameState.board, currentColor);
+            const hasMoves = hasAnyLegalMoves(gameState.board, currentColor);
+
+            if (updateMessages) {
+                elements.messageBox.textContent = ''; // Clear previous messages
+                elements.messageBox.classList.remove('text-green-400', 'text-yellow-400', 'text-red-400');
+            }
+            
+            // Only update buttons if not already game over
+            if (updateMessages) {
+                 elements.undoBtn.disabled = gameState.history.length <= 1;
+                 elements.redoBtn.disabled = gameState.future.length === 0;
+            }
+
+
+            if (isInCheck && !hasMoves) {
+                const winner = currentColor === 'white' ? 'Black' : 'White';
+                if (updateMessages) {
+                    elements.messageBox.textContent = `${winner} Wins by CHECKMATE!`;
+                    elements.messageBox.classList.add('text-green-400');
+                    elements.undoBtn.disabled = true;
+                    elements.redoBtn.disabled = true;
+                }
+                return 'checkmate'; 
+            } else if (!isInCheck && !hasMoves) {
+                if (updateMessages) {
+                    elements.messageBox.textContent = 'Game Over: STALEMATE (Draw)!';
+                    elements.messageBox.classList.add('text-yellow-400');
+                }
+                return 'stalemate';
+            } else if (isInCheck) {
+                if (updateMessages) {
+                    elements.messageBox.textContent = `${currentColor.charAt(0).toUpperCase() + currentColor.slice(1)} is in CHECK!`;
+                    elements.messageBox.classList.add('text-red-400');
+                }
+                return 'check';
+            }
+            return 'safe';
+        };
+        
+        const getMoveNotation = (fromIndex, toIndex, piece, capturedPiece) => {
+            const fromSquare = toAlgebraic(fromIndex);
+            const toSquare = toAlgebraic(toIndex);
+            const pieceType = piece.toUpperCase();
+            
+            // 1. Castling notation
+            if (pieceType === 'K' && Math.abs(toIndex - fromIndex) === 2) {
+                return (toIndex > fromIndex) ? 'O-O' : 'O-O-O';
+            }
+
+            // 2. Standard Notation
+            const notationSymbol = NOTATION_SYMBOLS[pieceType];
+            let notation = notationSymbol;
+
+            if (capturedPiece) {
+                notation += pieceType === 'P' ? fromSquare[0] + 'x' : 'x';
+            }
+
+            notation += toSquare;
+            // Check/Checkmate symbol is added AFTER the move is fully processed (including promotion)
+            // for now, we return the base notation.
+            return notation;
+        };
+        
+        // Updates castling rights based on piece movement
+        const updateCastlingRights = (fromIndex, piece) => {
+            const type = piece.toUpperCase();
+            const color = getPieceColor(piece);
+
+            if (type === 'K') {
+                if (color === 'white') {
+                    gameState.castlingRights.wK = false;
+                    gameState.castlingRights.wQ = false;
+                } else {
+                    gameState.castlingRights.bK = false;
+                    gameState.castlingRights.bQ = false;
+                }
+            } else if (type === 'R') {
+                if (fromIndex === 63) gameState.castlingRights.wK = false; // White h1
+                if (fromIndex === 56) gameState.castlingRights.wQ = false; // White a1
+                if (fromIndex === 7) gameState.castlingRights.bK = false; // Black h8
+                if (fromIndex === 0) gameState.castlingRights.bQ = false; // Black a8
+            }
+        };
+
+
+        let selectedIndex = -1;
+        let legalDestinations = [];
+
+        const handleMoveAttempt = (fromIndex, toIndex) => {
+            clearHighlights();
+            elements.messageBox.textContent = '';
+
+            const piece = gameState.board[fromIndex];
+            const targetPiece = gameState.board[toIndex];
+            
+            // Save state *before* modification
+            saveState(); 
+
+            // Calculate notation BEFORE modifying the board
+            const notation = getMoveNotation(fromIndex, toIndex, piece, targetPiece);
+
+            // --- 1. SPECIAL MOVE HANDLING (CASTLING) ---
+            const pieceType = piece.toUpperCase();
+            if (pieceType === 'K' && Math.abs(toIndex - fromIndex) === 2) {
+                const isWhite = getPieceColor(piece) === 'white';
+                if (toIndex === 62) { // White King-side
+                    gameState.board[63] = ''; gameState.board[61] = isWhite ? 'R' : 'r';
+                } else if (toIndex === 58) { // White Queen-side
+                    gameState.board[56] = ''; gameState.board[59] = isWhite ? 'R' : 'r';
+                } else if (toIndex === 6) { // Black King-side
+                    gameState.board[7] = ''; gameState.board[5] = isWhite ? 'R' : 'r';
+                } else if (toIndex === 2) { // Black Queen-side
+                    gameState.board[0] = ''; gameState.board[3] = isWhite ? 'R' : 'r';
+                }
+            }
+            
+            // --- 2. UPDATE CASTLING RIGHTS ---
+            updateCastlingRights(fromIndex, piece);
+            if (targetPiece && targetPiece.toUpperCase() === 'R') {
+                updateCastlingRights(toIndex, targetPiece);
+            }
+            
+            // --- 3. PERFORM STANDARD MOVE ---
+            gameState.board[toIndex] = piece;
+            gameState.board[fromIndex] = '';
+            
+            // --- 4. PAWN PROMOTION CHECK ---
+            if (pieceType === 'P' && (toIndex >= 0 && toIndex <= 7 || toIndex >= 56 && toIndex <= 63)) {
+                // Promotion required. Do not switch turn yet.
+                gameState.movesLog.push(notation); // Log base notation before promotion suffix
+                // The selectPromotionPiece function will finish the move and update state.
+                showPromotionDialog(toIndex);
+                return; // Exit here, let promotion function handle state change and render
+            }
+
+
+            // --- 5. FINISH MOVE (Non-Promotion) ---
+            gameState.movesLog.push(notation);
+
+            // Switch Turn
+            gameState.turn = gameState.turn === 'white' ? 'black' : 'white';
+            
+            // Check for check/checkmate and add suffix to notation if needed
+            const nextTurnColor = gameState.turn;
+            const isInCheck = isKingInCheck(gameState.board, nextTurnColor);
+            const lastMoveIndex = gameState.movesLog.length - 1;
+
+            if (isInCheck) {
+                if (!hasAnyLegalMoves(gameState.board, nextTurnColor)) {
+                     gameState.movesLog[lastMoveIndex] += '#'; // Checkmate symbol
+                } else {
+                     gameState.movesLog[lastMoveIndex] += '+'; // Check symbol
+                }
+            }
+
+
+            // Reset selection state
+            selectedIndex = -1;
+            legalDestinations = [];
+
+            // Re-render and check status
+            renderBoard();
+            renderMovesLog();
+            
+            // Re-save the final state (this covers the new state after the turn change)
+            gameState.history.push({
+                board: [...gameState.board],
+                turn: gameState.turn,
+                movesLog: [...gameState.movesLog],
+                castlingRights: { ...gameState.castlingRights },
+                enPassantTarget: gameState.enPassantTarget
+            });
+            gameState.future = []; // Clear redo stack
+        };
+
+        // --- Click/Touch Handling ---
+
+        elements.board.addEventListener('click', (e) => {
+            // Check if game is already over or promotion is pending
+            if (checkGameStatus(false) === 'checkmate' || checkGameStatus(false) === 'stalemate' || pendingPromotion !== null) return; 
+
+            const squareEl = e.target.closest('.square');
+            if (!squareEl) return;
+            
+            const clickedIndex = parseInt(squareEl.dataset.index, 10);
+            const clickedPiece = gameState.board[clickedIndex];
+            const pieceColor = getPieceColor(clickedPiece);
+            const currentTurnColor = gameState.turn;
+            
+            clearHighlights(); // Clear highlights on every click
+
+            if (selectedIndex === -1) {
+                // 1. No piece selected: Try to select a piece of the current player
+                if (!clickedPiece || pieceColor !== currentTurnColor) {
+                    elements.messageBox.textContent = `It's ${currentTurnColor}'s turn. Select your piece.`;
+                    return;
+                }
+                
+                // Select piece
+                selectedIndex = clickedIndex;
+                squareEl.classList.add('selected-square');
+                legalDestinations = generateLegalMoves(selectedIndex);
+                
+                if (legalDestinations.length === 0) {
+                    elements.messageBox.textContent = "No legal moves available for this piece.";
+                    selectedIndex = -1;
+                    squareEl.classList.remove('selected-square');
+                    return;
+                }
+                highlightLegalMoves(legalDestinations);
+
+            } else {
+                // 2. Piece is already selected 
+                
+                const isTargetMove = !clickedPiece || pieceColor !== currentTurnColor;
+                
+                if (isTargetMove && legalDestinations.includes(clickedIndex)) {
+                    // Case A: Clicked a legal move destination (empty or opponent)
+                    handleMoveAttempt(selectedIndex, clickedIndex);
+                } 
+                
+                else if (pieceColor === currentTurnColor && clickedIndex !== selectedIndex) {
+                    // Case B: Clicked own piece (Change selection)
+                    selectedIndex = clickedIndex;
+                    squareEl.classList.add('selected-square');
+                    legalDestinations = generateLegalMoves(selectedIndex);
+                    highlightLegalMoves(legalDestinations);
+                }
+                else {
+                    // Case C: Clicked the same piece (Deselect) or clicked an illegal square
+                    selectedIndex = -1;
+                    legalDestinations = [];
+                    // Rerender to ensure check/checkmate color returns if present
+                    renderBoard(); 
+                    if (isTargetMove) {
+                        elements.messageBox.textContent = "That is not a legal move.";
+                    }
+                }
+            }
+        });
+
+        // --- Initialization ---
+
+        elements.undoBtn.addEventListener('click', undoMove);
+        elements.redoBtn.addEventListener('click', redoMove);
+        
+        /**
+         * Updates UI elements like turn indicator, buttons, and material score.
+         */
+        const updateUI = (status) => {
+            elements.turnIndicator.textContent = `${gameState.turn.charAt(0).toUpperCase() + gameState.turn.slice(1)}'s Turn`;
+            
+            if (status === 'checkmate') {
+                elements.turnIndicator.textContent = "GAME OVER";
+                elements.turnIndicator.classList.remove('bg-indigo-600');
+                elements.turnIndicator.classList.add('bg-red-700');
+            } else if (status === 'stalemate') {
+                elements.turnIndicator.textContent = "DRAW";
+                elements.turnIndicator.classList.remove('bg-indigo-600');
+                elements.turnIndicator.classList.add('bg-yellow-700');
+            } else {
+                 elements.turnIndicator.classList.remove('bg-red-700', 'bg-yellow-700');
+                 elements.turnIndicator.classList.add('bg-indigo-600');
+            }
+            
+            // Only re-check game status if we didn't receive the status argument (e.g., in undo/redo)
+            if (!status) {
+                checkGameStatus(true);
+            }
+            
+            calculateMaterialScore();
+            renderMovesLog();
+        };
+
+        // Initialize the board on load
+        window.onload = () => {
+            // Save initial state to history
+            gameState.history.push({
+                board: [...gameState.board],
+                turn: gameState.turn,
+                movesLog: [],
+                castlingRights: { ...gameState.castlingRights },
+                enPassantTarget: gameState.enPassantTarget
+            });
+            renderBoard(); // Renders board and calls updateUI
+        };
+
+    </script>
 </body>
 </html>
-
-
