@@ -77,7 +77,11 @@
       animation: logo-bob 4s infinite alternate ease-in-out;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
-
+    .video{
+      border-radius:25px;
+      width:96px;
+      height:96px;
+    }
     @keyframes logo-bob{
       from { transform: translateY(0) rotate(0.5deg) scale(1); }
       to   { transform: translateY(-6px) rotate(-0.5deg) scale(1.03); }
@@ -258,7 +262,11 @@
 
   <div class="wrap">
     <header>
-      <div class="logo" aria-hidden="true">OC</div>
+      <div class="logo" aria-hidden="true"><div class="logo-container">
+  <video src="CHESS HUB.mp4" type="video/mp4" height="90px" width="90px" style="border-radius: 15px;align-self: center;" autoplay loop muted playsinline>
+  </video>
+</div>
+</div>
 
       <div class="brand-info">
         <h1>Online Chess Courses</h1>
@@ -274,6 +282,24 @@
         </ul>
       </nav>
     </header>
+
+    <section class="newsbox" aria-labelledby="testimonial-topic">
+  <article class="news-main reveal-on-scroll" id="testimonial-topic" tabindex="0">
+    <h1>Testimonial</h1>
+    <h2>Amit — ChessHub user</h2>
+    <p>
+      ChessHub has completely changed how I practice and learn — the interface is clean, lessons are focused, and puzzles
+      push you just the right amount. I noticed real improvement in my calculation and opening play after only a few weeks.
+      The site's speed and intuitive layout make studying enjoyable instead of a chore. Highly recommended for players who
+      want fast, practical progress.
+    </p>
+  </article>
+
+      <aside class="news-side reveal-on-scroll" aria-label="highlight">
+        <img src="amit.jpeg" alt="Comet Open winner" />
+        <div style="text-align:center;color:var(--muted);font-size:13px;">Fan of Chess hub-Amit</div>
+      </aside>
+    </section>
 
     <section class="newsbox" aria-labelledby="topic">
       <article class="news-main reveal-on-scroll" id="topic" tabindex="0">
