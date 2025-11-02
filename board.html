@@ -172,9 +172,9 @@
         body.force-pc-layout .board-container,
         @media (min-width: 1024px) { 
             .board-container {
-                width: 650px;
-                height: 650px;
-                max-width: 650px; 
+                width: 350px;
+                height: 350px;
+                max-width: 350px; 
             }
             #moves-log-container {
                 max-width: 300px;
@@ -184,9 +184,9 @@
 
         /* 2. Large PC View (Large - 750px) - Applied by force-large-pc-layout class (overrides) */
         body.force-large-pc-layout .board-container { 
-            width: 750px !important;
-            height: 750px !important;
-            max-width: 750px !important; 
+            width: 640px !important;
+            height: 640px !important;
+            max-width: 640px !important; 
         }
         body.force-large-pc-layout #moves-log-container { 
             max-width: 350px !important; /* Slightly wider log for large size */
@@ -225,10 +225,10 @@
                     Mobile View
                 </button>
                 <button id="pc-mode-button" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition duration-150 shadow-lg hover:shadow-xl">
-                    PC View (650px)
+                    Large PC View (950px)
                 </button>
                 <button id="large-pc-mode-button" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-full transition duration-150 shadow-lg hover:shadow-xl">
-                    Large PC View (750px)
+                    PC View (650px)
                 </button>
 
                 <!-- Game Controls -->
