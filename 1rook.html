@@ -2,71 +2,355 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mate with 1 Rook — Online Chess Course</title>
-  <link rel="stylesheet" href="sicilian.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mate with 1 Rook — Endgame Lesson</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* === Theme Variables (User-provided) === */
+    :root{
+      /* Unified Dark/Amber Theme Variables */
+      --bg-1:#1a1a1a; /* Deep charcoal */
+      --bg-2:#0a0a0a; /* Pure black */
+      --accent:#f59e0b; /* Tailwind Amber-500 */
+      --muted:#a3a3a3; /* Gray-400 */
+      --card:#1c1c1c; /* Dark card background */
+      --radius:14px;
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.8);
+      --shadow-md: 0 6px 20px rgba(0,0,0,0.45);
+      --ease:cubic-bezier(.2,.9,.3,1);
+      /* Chess Board Colors */
+      --light-square: #f0d9b5; 
+      --dark-square: #b58863;
+    }
+
+    /* === Global Styles === */
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(circle at center, var(--bg-1) 0%, var(--bg-2) 100%);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .wrap{
+      max-width:960px; /* Adjusted slightly narrower for lesson focus */
+      margin:32px auto;
+      padding:0 28px;
+      position:relative;
+      min-height: calc(100vh - 120px);
+    }
+    .accent-shape{
+      position:fixed;
+      width:220px;
+      height:220px;
+      right:-80px;
+      top:100px;
+      background: radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.15), transparent 30%),
+                  radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.08), transparent 40%);
+      border-radius:50%;
+      filter: blur(24px);
+      pointer-events:none;
+      transform:translateZ(0);
+      z-index:0;
+      opacity: 0.6;
+    }
+    
+    /* === Header Styling === */
+    .site-header{
+      background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(6px);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .header-inner{
+      max-width:960px;
+      margin:0 auto;
+      padding:16px 28px;
+      display:flex;
+      align-items:center;
+      gap:20px;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      color: var(--bg-2);
+      background: linear-gradient(135deg, var(--accent), #ffbf00); 
+      font-size: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo svg { stroke: var(--bg-2); }
+    .header-title h1{ margin:0; font-size:1.5rem; color:#fff; letter-spacing:0.2px; }
+    .header-title p{ margin:0; color:var(--muted); font-size:0.9rem; }
+
+    /* === Card and Layout Styles === */
+    .card{
+      background: var(--card);
+      border-radius:var(--radius);
+      padding:1.5rem;
+      box-shadow: var(--shadow-md);
+      transition: box-shadow 0.3s ease;
+      z-index: 1; /* Above accent-shape */
+      position: relative;
+    }
+    .card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 0.5rem;
+    }
+    .media-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: 1fr;
+      margin-top: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .media-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+    .media-card {
+      border-radius: var(--radius);
+      background-color: var(--card);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .media {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; 
+      overflow: hidden;
+    }
+    .media img.poster {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: 3px solid var(--accent); 
+      border-radius: 50%;
+      width: 4.5rem;
+      height: 4.5rem;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .play-overlay:hover {
+      background: rgba(245, 158, 11, 0.8);
+      color: var(--bg-2); 
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    .meta {
+      padding: 1rem 1.5rem;
+      flex-grow: 1;
+    }
+    .meta .kv {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    .meta .title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #fff;
+      margin: 0;
+    }
+    .media-badge {
+      background-color: var(--accent); 
+      color: var(--bg-2); 
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .notes-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #e6eef6;
+    }
+    .notes-list li::before {
+      content: '✓';
+      color: var(--accent); 
+      font-weight: 700;
+      position: absolute;
+      left: 0;
+    }
+
+    /* === Practice Problem Styles === */
+    .board {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(8, 1fr);
+        width: 100%;
+        max-width: 300px;
+        aspect-ratio: 1 / 1;
+        margin: 1rem auto;
+        border: 4px solid var(--accent);
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+    }
+    .square {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        cursor: pointer; /* Enable clicking */
+        transition: background-color 0.1s ease;
+    }
+    .light {
+        background-color: var(--light-square);
+    }
+    .dark {
+        background-color: var(--dark-square);
+    }
+    .square:hover {
+        opacity: 0.8;
+    }
+    .piece-present {
+        cursor: pointer;
+    }
+    .square.selected {
+        box-shadow: inset 0 0 0 4px #00aaff; /* Highlight selected square */
+        background-color: #00aaff !important; 
+        transition: none;
+    }
+    .piece {
+        user-select: none;
+        pointer-events: none; /* Do not block click on the square */
+    }
+    #feedback {
+        margin-top: 0.75rem;
+        font-weight: 600;
+        min-height: 20px;
+    }
+    .feedback-success {
+        color: var(--accent);
+    }
+    .feedback-error {
+        color: #ff6464; /* Red for errors */
+    }
+    .message-box {
+        background-color: #2a2a2a;
+        padding: 1rem;
+        border-radius: var(--radius);
+        margin-top: 1rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+    }
+
+
+    /* Footer */
+    .site-footer{
+        margin-top:40px;
+        padding:18px;
+        text-align:center;
+        color:var(--muted);
+        font-size:13px;
+        border-top:1px solid rgba(255,255,255,0.05);
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo">  <video src="CHESS HUB.mp4" type="video/mp4" height="90px" width="90px" style="border-radius: 15px;align-self: center;" autoplay loop muted playsinline>
-  </video></div>
-        <div>
-          <h1>Mate with 1 Rook</h1>
-          <p>Essential technique for delivering mate with a single rook</p>
+  <!-- Ambient Amber Glow Effect -->
+  <div class="accent-shape" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo" aria-hidden="true">
+<h1>♖</h1>
+      </div>
+      <div class="header-title">
+        <h1>Mate with 1 Rook</h1>
+        <p>Essential endgame technique for beginners</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    
+    <section class="card mt-6">
+      <h2>Lesson Overview</h2>
+      <p class="text-gray-300">Learn the straightforward ladder-style mate with a rook supported by your king. This lesson demonstrates the steps and common pitfalls when converting a material advantage.</p>
+    </section>
+
+    <div class="media-grid">
+      <!-- Video card (Main Content) -->
+      <article class="media-card md:col-span-2" aria-label="One rook lesson video">
+        <div class="media" role="region" aria-label="Video player">
+          <img class="poster" src="https://placehold.co/800x450/1c1c1c/f59e0b?text=Rook+Mate+Lesson+Video" alt="Mate with 1 rook poster" />
+          <button class="play-overlay" aria-label="Play video" data-video-id="8ncMGJQDjlg">▶</button>
         </div>
+        <div class="meta">
+          <div class="kv">
+            <h3 class="title">Rook + King vs. King: The Box Method</h3>
+            <span class="media-badge">Video Lesson</span>
+          </div>
+          <p class="text-sm text-gray-400">Step-by-step demonstration and practical tips for executing the mate.</p>
+        </div>
+      </article>
+      
+      <!-- Important Notes Card -->
+      <aside class="card" aria-label="Important Notes on Rook Mate">
+        <h2>Key Principles</h2>
+        <ul class="notes-list text-sm space-y-2">
+          <li>The enemy King must be driven to the edge (rank 1 or 8, or file A or H).</li>
+          <li>The Rook and your King must work together to cut off the enemy King's escape squares.</li>
+          <li>The "Box" must be continuously reduced by advancing the Rook one rank at a time.</li>
+          <li>Avoid stalemate by ensuring the opponent's King always has at least one legal move.</li>
+          <li>Bring your King closer to the Rook once the enemy King is trapped for the final mating move.</li>
+        </ul>
+      </aside>
+    </div>
+
+    <!-- Practice Problems Section -->
+    <section class="card mt-6">
+      <h2>Practice Problem: Mate in 1</h2>
+      <p class="text-gray-300">White to move. Find the immediate checkmate using the rook. **Click the Rook (g7), then click the destination square (g8).**</p>
+      
+      <div id="chessboard-container" class="flex flex-col items-center">
+          <div id="board" class="board">
+              <!-- Chessboard will be rendered here by JavaScript -->
+          </div>
+          <div id="feedback" class="feedback message-box text-base w-full max-w-xs h-12 flex items-center justify-center">
+            Click the white Rook (g7) to select it.
+          </div>
       </div>
-    </header>
+    </section>
 
-    <main>
-      <section class="card" style="margin-top:20px;">
-        <h2>Description</h2>
-        <p>Learn the straightforward ladder-style mate with a rook supported by your king.
-           This lesson demonstrates the steps and common pitfalls when converting a material advantage.</p>
-      </section>
-
-      <div class="media-grid" style="margin-top:18px;">
-        <!-- Video card -->
-        <article class="media-card video-box" aria-label="One rook lesson video">
-          <div class="media" role="region" aria-label="Video player">
-            <img class="poster" src="1rook.png" alt="Mate with 1 rook poster" />
-            <button class="play-overlay" aria-label="Play video" data-video-id="8ncMGJQDjlg">▶</button>
-          </div>
-          <div class="meta">
-            <div class="kv">
-              <h2 class="title">Mate with 1 Rook — Lesson</h2>
-              <span class="media-badge">Lesson</span>
-            </div>
-            <p class="caption">Step-by-step demonstration and practical tips for executing the mate.</p>
-          </div>
-        </article>
-
-        <!-- Image card -->
-        <aside class="media-card image-box sidebar" aria-label="Diagram">
-          <div class="media">
-            <img src="1rook.png" alt="Diagram: mate with one rook" />
-          </div>
-          <div class="meta">
-            <h2 class="title">Position Diagram</h2>
-            <p class="caption">Reference diagram illustrating the final mating setup.</p>
-            <div style="margin-top:8px;display:flex;gap:8px;">
-              <a class="btn btn-primary" href="#" role="button">View more</a>
-              <a class="btn" href="1rook.png" download>Download</a>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </main>
-
-    <footer>
-      <div class="small">© Online Chess Course</div>
-      <div class="small">Made with ♟️</div>
+    <footer class="site-footer">
+        © Online Chess Course — All rights reserved.
     </footer>
-  </div>
+  </main>
 
   <script>
-    // lazy-load YouTube iframe on play
+    // --- Video Player Logic ---
     document.addEventListener('click', function (e) {
       const btn = e.target.closest('.play-overlay');
       if (!btn) return;
@@ -79,105 +363,167 @@
       iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
       iframe.setAttribute('frameborder', '0');
       iframe.setAttribute('allowfullscreen', '');
+      iframe.style.position = 'absolute';
+      iframe.style.top = '0';
+      iframe.style.left = '0';
       iframe.style.width = '100%';
       iframe.style.height = '100%';
       container.innerHTML = '';
       container.appendChild(iframe);
     });
+
+    // --- Chess Practice Logic (Interactive) ---
+
+    // Define the problem (FEN and correct solution)
+    // White Rook on g7, White King on f6, Black King on h8 (Rg8# is mate)
+    const PROBLEM = {
+        // Updated FEN for the new legal mate position: 7k/6R1/5K2/8/8/8/8/8 w - - 0 1
+        fen: "7k/6R1/5K2/8/8/8/8/8 w - - 0 1", 
+        correctMove: "Rf8", 
+        startSquare: "f7",
+        targetSquare: "f8",
+        pieces: { 
+            'f7': { symbol: '♖', color: 'white' }, // White Rook (The piece to move)
+            'h6': { symbol: '♔', color: 'white' }, // White King (Supports the mate)
+            'h8': { symbol: '♚', color: 'black' }  // Black King (Cornered)
+        }
+    };
+
+    const boardElement = document.getElementById('board');
+    const feedbackElement = document.getElementById('feedback');
+    let currentBoardState = JSON.parse(JSON.stringify(PROBLEM.pieces)); // Copy initial state
+    let selectedSquare = null;
+    let isSolved = false;
+
+    /**
+     * Converts a square index (0-63) to chess notation (e.g., 'a8').
+     * @param {number} index - The square index (0-63).
+     * @returns {string} - The algebraic notation (e.g., 'a8').
+     */
+    function indexToSquare(index) {
+        const file = String.fromCharCode('a'.charCodeAt(0) + (index % 8));
+        const rank = 8 - Math.floor(index / 8);
+        return file + rank;
+    }
+    
+    /**
+     * Updates the feedback message.
+     * @param {string} message - The message to display.
+     * @param {string} type - 'success', 'error', or 'info'.
+     */
+    function showFeedback(message, type) {
+        feedbackElement.textContent = message;
+        feedbackElement.className = 'feedback message-box text-base w-full max-w-xs h-12 flex items-center justify-center';
+        if (type === 'success') {
+            feedbackElement.classList.add('feedback-success');
+        } else if (type === 'error') {
+            feedbackElement.classList.add('feedback-error');
+        }
+    }
+
+    /**
+     * Renders the chess board and attaches event listeners.
+     */
+    function renderBoard() {
+        boardElement.innerHTML = ''; // Clear existing board
+        
+        // Loop from 0 (a8) to 63 (h1)
+        for (let i = 0; i < 64; i++) {
+            const square = document.createElement('div');
+            const algSquare = indexToSquare(i);
+            square.dataset.square = algSquare;
+
+            // Determine square color
+            const isLight = ((i % 8) + Math.floor(i / 8)) % 2 === 0;
+            square.classList.add('square', (isLight ? 'light' : 'dark'));
+
+            // Highlight selected square
+            if (selectedSquare === algSquare) {
+                square.classList.add('selected');
+            }
+            
+            // Render piece if present
+            if (currentBoardState[algSquare]) {
+                const pieceData = currentBoardState[algSquare];
+                const piece = document.createElement('span');
+                piece.classList.add('piece', 'text-4xl'); 
+                piece.textContent = pieceData.symbol;
+                
+                // Set piece color based on Unicode (white or black pieces)
+                piece.style.color = pieceData.color === 'white' ? '#eee' : '#333';
+                square.appendChild(piece);
+                square.classList.add('piece-present'); // Mark square as containing a piece
+            }
+
+            // Attach click handler
+            square.addEventListener('click', () => handleSquareClick(algSquare));
+
+            boardElement.appendChild(square);
+        }
+    }
+
+    /**
+     * Handles the user's click on a square.
+     * @param {string} squareId - The algebraic notation of the clicked square.
+     */
+    function handleSquareClick(squareId) {
+        if (isSolved) {
+            showFeedback("The problem is already solved!", 'info');
+            return;
+        }
+
+        const pieceOnSquare = currentBoardState[squareId];
+
+        // 1. If no square is selected and the user clicks a piece (White Rook)
+        if (!selectedSquare && pieceOnSquare && pieceOnSquare.color === 'white') {
+            if (squareId !== PROBLEM.startSquare) {
+                 showFeedback("You must move the Rook to deliver mate. Select the Rook on " + PROBLEM.startSquare + ".", 'error');
+                 return;
+            }
+            selectedSquare = squareId;
+            showFeedback(`Piece selected: ${pieceOnSquare.symbol} on ${squareId}. Now click the target square.`, 'info');
+        } 
+        // 2. If a square is selected and the user clicks a target square
+        else if (selectedSquare) {
+            const start = selectedSquare;
+            const target = squareId;
+            
+            // Check if it's the correct move
+            if (start === PROBLEM.startSquare && target === PROBLEM.targetSquare) {
+                // Correct move logic
+                isSolved = true;
+                
+                // Perform the visual move
+                // Save the piece data for the King and the Rook
+                const rookPiece = currentBoardState[PROBLEM.startSquare];
+                const kingPiece = currentBoardState['h6'];
+
+                currentBoardState = {}; // Clear board state (except for pieces we keep)
+                currentBoardState[PROBLEM.targetSquare] = rookPiece; // Move Rook to g8
+                currentBoardState['h6'] = kingPiece; // Keep White King on h6
+                currentBoardState['f7'] = PROBLEM.pieces['f8']; 
+                currentBoardState['h8'] = { symbol: '♚', color: 'black' };  // Black King (Cornered)
+                delete currentBoardState[PROBLEM.startSquare]; // Remove piece from starting square
+                
+                showFeedback(`Checkmate! ${PROBLEM.correctMove}# is correct!`, 'success');
+            } else {
+                // Incorrect move logic
+                showFeedback(`Incorrect move. The mate is ${PROBLEM.correctMove}#. Try again.`, 'error');
+            }
+
+            // Reset state and re-render the board for the next attempt or final position
+            selectedSquare = null;
+        }
+        
+        // Always re-render to update highlights or piece positions
+        renderBoard();
+    }
+
+    // Initialize the board when the window loads
+    window.onload = function() {
+        renderBoard();
+        showFeedback("Click the white Rook (f7) to select it.", 'info');
+    };
   </script>
 </body>
 </html>
-// ...existing code...
-```// filepath: c:\Users\senni\online-chess-course-3\1rook.html
-// ...existing code...
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mate with 1 Rook — Online Chess Course</title>
-  <link rel="stylesheet" href="sicilian.css" />
-</head>
-<body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo">  <video src="CHESS HUB.mp4" type="video/mp4" height="90px" width="90px" style="border-radius: 15px;align-self: center;" autoplay loop muted playsinline>
-  </video></div>
-        <div>
-          <h1>Mate with 1 Rook</h1>
-          <p>Essential technique for delivering mate with a single rook</p>
-        </div>
-      </div>
-    </header>
-
-    <main>
-      <section class="card" style="margin-top:20px;">
-        <h2>Description</h2>
-        <p>Learn the straightforward ladder-style mate with a rook supported by your king.
-           This lesson demonstrates the steps and common pitfalls when converting a material advantage.</p>
-      </section>
-
-      <div class="media-grid" style="margin-top:18px;">
-        <!-- Video card -->
-        <article class="media-card video-box" aria-label="One rook lesson video">
-          <div class="media" role="region" aria-label="Video player">
-            <img class="poster" src="1rook.png" alt="Mate with 1 rook poster" />
-            <button class="play-overlay" aria-label="Play video" data-video-id="8ncMGJQDjlg">▶</button>
-          </div>
-          <div class="meta">
-            <div class="kv">
-              <h2 class="title">Mate with 1 Rook — Lesson</h2>
-              <span class="media-badge">Lesson</span>
-            </div>
-            <p class="caption">Step-by-step demonstration and practical tips for executing the mate.</p>
-          </div>
-        </article>
-
-        <!-- Image card -->
-        <aside class="media-card image-box sidebar" aria-label="Diagram">
-          <div class="media">
-            <img src="1rook.png" alt="Diagram: mate with one rook" />
-          </div>
-          <div class="meta">
-            <h2 class="title">Position Diagram</h2>
-            <p class="caption">Reference diagram illustrating the final mating setup.</p>
-            <div style="margin-top:8px;display:flex;gap:8px;">
-              <a class="btn btn-primary" href="#" role="button">View more</a>
-              <a class="btn" href="1rook.png" download>Download</a>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </main>
-
-    <footer>
-      <div class="small">© Online Chess Course</div>
-      <div class="small">Made with ♟️</div>
-    </footer>
-  </div>
-
-  <script>
-    // lazy-load YouTube iframe on play
-    document.addEventListener('click', function (e) {
-      const btn = e.target.closest('.play-overlay');
-      if (!btn) return;
-      const container = btn.closest('.media');
-      const id = btn.getAttribute('data-video-id');
-      if (!id || !container) return;
-      const iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
-      iframe.title = 'Lesson video';
-      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-      iframe.setAttribute('frameborder', '0');
-      iframe.setAttribute('allowfullscreen', '');
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      container.innerHTML = '';
-      container.appendChild(iframe);
-    });
-  </script>
-</body>
-</html>
-
-            <p class="caption">Step-by-step demonstration and practical tips for

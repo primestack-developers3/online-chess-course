@@ -2,87 +2,501 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mate with 1 queen — Online Chess Course</title>
-  <link rel="stylesheet" href="sicilian.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mate with 1 Queen — Online Chess Course</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* === Theme Variables === */
+    :root{
+      --bg-1:#1a1a1a; /* Deep charcoal */
+      --bg-2:#0a0a0a; /* Pure black */
+      --accent:#f59e0b; /* Tailwind Amber-500 */
+      --muted:#a3a3a3; /* Gray-400 */
+      --card:#1c1c1c; /* Dark card background */
+      --radius:14px;
+      --shadow-md: 0 6px 20px rgba(0,0,0,0.45);
+      --light-square: #f0d9b5; 
+      --dark-square: #b58863;
+    }
+
+    /* === Global Styles === */
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(circle at center, var(--bg-1) 0%, var(--bg-2) 100%);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .wrap{
+      max-width:960px;
+      margin:32px auto;
+      padding:0 28px;
+      position:relative;
+      min-height: calc(100vh - 120px);
+    }
+    .accent-shape{
+      position:fixed;
+      width:220px;
+      height:220px;
+      left: -80px;
+      top:100px;
+      background: radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.15), transparent 30%),
+                  radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.08), transparent 40%);
+      border-radius:50%;
+      filter: blur(24px);
+      pointer-events:none;
+      transform:translateZ(0);
+      z-index:0;
+      opacity: 0.6;
+    }
+    
+    /* === Header Styling === */
+    .site-header{
+      background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(6px);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .header-inner{
+      max-width:960px;
+      margin:0 auto;
+      padding:16px 28px;
+      display:flex;
+      align-items:center;
+      gap:20px;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      color: var(--bg-2);
+      background: linear-gradient(135deg, var(--accent), #ffbf00); 
+      font-size: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo svg { stroke: var(--bg-2); fill: none; }
+    .header-title h1{ margin:0; font-size:1.5rem; color:#fff; letter-spacing:0.2px; }
+    .header-title p{ margin:0; color:var(--muted); font-size:0.9rem; }
+
+    /* === Card and Layout Styles === */
+    .card{
+      background: var(--card);
+      border-radius:var(--radius);
+      padding:1.5rem;
+      box-shadow: var(--shadow-md);
+      z-index: 1;
+      position: relative;
+    }
+    .card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 0.5rem;
+    }
+    .media-grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: 1fr;
+      margin-top: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .media-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+    .media-card {
+      border-radius: var(--radius);
+      background-color: var(--card);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .media {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      overflow: hidden;
+    }
+    .media iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .media img.poster {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: 3px solid var(--accent); 
+      border-radius: 50%;
+      width: 4.5rem;
+      height: 4.5rem;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      z-index: 2;
+    }
+    .play-overlay:hover {
+      background: rgba(245, 158, 11, 0.8);
+      color: var(--bg-2); 
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    .meta {
+      padding: 1rem 1.5rem;
+      flex-grow: 1;
+    }
+    .meta .kv {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    .meta .title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #fff;
+      margin: 0;
+    }
+    .media-badge {
+      background-color: var(--accent); 
+      color: var(--bg-2); 
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* === Practice Problem Styles === */
+    .board {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(8, 1fr);
+        width: 100%;
+        max-width: 380px; 
+        aspect-ratio: 1 / 1;
+        margin: 1.5rem auto;
+        border: 4px solid var(--accent);
+        border-radius: 4px;
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+    .square {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem; 
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.1s ease;
+        user-select: none;
+        touch-action: manipulation;
+    }
+    .light {
+        background-color: var(--light-square);
+    }
+    .dark {
+        background-color: var(--dark-square);
+    }
+    .square.selected {
+        box-shadow: inset 0 0 0 4px #00aaff;
+        background-color: rgba(0, 170, 255, 0.5) !important; 
+        transition: none;
+    }
+    .piece {
+        user-select: none;
+        pointer-events: none;
+        line-height: 1;
+    }
+    .message-box {
+        background-color: #2a2a2a;
+        padding: 0.75rem;
+        border-radius: var(--radius);
+        margin-top: 1rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+    }
+    .feedback-success {
+        color: var(--bg-2);
+        background-color: var(--accent);
+    }
+    .feedback-error {
+        color: #ff6464;
+        background-color: #3d1c1c;
+    }
+
+    /* Footer */
+    .site-footer{
+        margin-top:40px;
+        padding:18px;
+        text-align:center;
+        color:var(--muted);
+        font-size:13px;
+        border-top:1px solid rgba(255,255,255,0.05);
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo">  <video src="CHESS HUB.mp4" type="video/mp4" height="90px" width="90px" style="border-radius: 15px;align-self: center;" autoplay loop muted playsinline>
-  </video></div>
-        <div>
-          <h1>Mate with 1 queen</h1>
-          <p>Basic checkmating pattern using a single queen</p>
+  <!-- Ambient Amber Glow Effect -->
+  <div class="accent-shape" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo" aria-hidden="true">
+<h1>♕</h1>
+      </div>
+      <div class="header-title">
+        <h1>Mate with 1 Queen</h1>
+        <p>Basic checkmating pattern using a single queen</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    
+    <section class="card mt-6">
+      <h2>Lesson Overview</h2>
+      <p class="text-gray-300">Learn the straightforward "Box Method" to force the enemy king to the edge of the board and deliver checkmate. A queen, supported by the king, can force mate quickly and reliably.</p>
+    </section>
+
+    <div class="media-grid">
+      <!-- Video card (Main Content) -->
+      <article class="media-card" aria-label="Lesson video">
+        <div class="media" role="region" aria-label="Video player">
+          <!-- Placeholder image for the video poster -->
+          <img class="poster" src="https://placehold.co/800x450/1c1c1c/f59e0b?text=Queen+Mate+Lesson+Video" alt="Mate with one queen poster" />
+          <button class="play-overlay" aria-label="Play video" data-video-id="1cBb010-yo4">▶</button>
         </div>
-      </div>
-    </header>
-
-    <main>
-      <section class="card" style="margin-top:20px;">
-        <h2>Description</h2>
-        <p>A short lesson demonstrating how to force mate with only a queen (and king support). If the video fails to load, the diagram on the right shows the final mating setup.</p>
-      </section>
-
-      <div class="media-grid" style="margin-top:18px;">
-        <!-- Video card -->
-        <article class="media-card video-box" aria-label="Lesson video">
-          <div class="media" role="region" aria-label="Video player">
-            <img class="poster" src="queen.png" alt="Mate with one queen poster" />
-            <button class="play-overlay" aria-label="Play video" data-video-id="1cBb010-yo4">▶</button>
+        <div class="meta">
+          <div class="kv">
+            <h3 class="title">Queen + King vs. King: The Box Method</h3>
+            <span class="media-badge">Video Lesson</span>
           </div>
-          <div class="meta">
-            <div class="kv">
-              <h2 class="title">Mate with 1 Queen — Lesson</h2>
-              <span class="media-badge">Lesson</span>
+          <p class="text-sm text-gray-400">Step-by-step demonstration of the ladder-style mate and practical tips.</p>
+        </div>
+      </article><br>
+
+      <!-- Practice Problem Card -->
+      <aside class="card" aria-label="Practice Problem: Mate in 1">
+        <h2>Practice Problem</h2>
+        <p class="text-gray-300 text-sm mb-4">White to move. Find the immediate checkmate. Click the Queen (f7), then click the destination square (h7).</p>
+        
+        <div id="chessboard-container" class="flex flex-col items-center">
+            <div id="board" class="board">
+                <!-- Chessboard will be rendered here by JavaScript -->
             </div>
-            <p class="caption">Step-by-step demonstration of the ladder-style mate and practical tips.</p>
-          </div>
-        </article>
-
-        <!-- Image card -->
-        <aside class="media-card image-box sidebar" aria-label="Diagram">
-          <div class="media">
-            <img src="queen.png" alt="Diagram: Queen mate example" />
-          </div>
-          <div class="meta">
-            <h2 class="title">Position Diagram</h2>
-            <p class="caption">Final mating position — reference when practicing.</p>
-            <div style="margin-top:8px;display:flex;gap:8px;">
-              <a class="btn btn-primary" href="#" role="button">View more</a>
-              <a class="btn" href="queen.png" download>Download</a>
+            <div id="feedback" class="feedback message-box text-base w-full max-w-xs h-12 flex items-center justify-center">
+              Click the white Queen (f7) to select it.
             </div>
-          </div>
-        </aside>
-      </div>
-    </main>
+        </div>
+      </aside>
+    </div>
 
-    <footer>
-      <div class="small">© Online Chess Course</div>
-      <div class="small">Made with ♟️</div>
+    <footer class="site-footer">
+        © Online Chess Course — Made with ♟️
     </footer>
-  </div>
+  </main>
 
   <script>
-    // lazy-load YouTube iframe when play overlay is clicked
+    // --- Video Player Logic ---
     document.addEventListener('click', function (e) {
       const btn = e.target.closest('.play-overlay');
       if (!btn) return;
       const container = btn.closest('.media');
       const id = btn.getAttribute('data-video-id');
       if (!id || !container) return;
+      
       const iframe = document.createElement('iframe');
-      iframe.setAttribute('src', 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1');
-      iframe.setAttribute('title', 'Lesson video');
+      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
+      iframe.title = 'Lesson video';
       iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
       iframe.setAttribute('frameborder', '0');
       iframe.setAttribute('allowfullscreen', '');
+      
+      iframe.style.position = 'absolute';
+      iframe.style.top = '0';
+      iframe.style.left = '0';
       iframe.style.width = '100%';
       iframe.style.height = '100%';
+      
       container.innerHTML = '';
       container.appendChild(iframe);
     });
+
+    // --- Chess Practice Logic (Interactive) ---
+
+    // Define the problem: White Queen on f7, White King on d6, Black King on h8. Mate is Qh7#
+    const PROBLEM = {
+        correctMove: "Qh7", 
+        startSquare: "f7",
+        targetSquare: "h7",
+        pieces: { 
+            // ♕ (White Queen), ♔ (White King), ♚ (Black King)
+            'f7': { symbol: '♕', color: 'white' }, 
+            'h6': { symbol: '♔', color: 'white' }, 
+            'h8': { symbol: '♚', color: 'black' }  
+        }
+    };
+
+    const boardElement = document.getElementById('board');
+    const feedbackElement = document.getElementById('feedback');
+    let currentBoardState = JSON.parse(JSON.stringify(PROBLEM.pieces)); // Copy initial state
+    let selectedSquare = null;
+    let isSolved = false;
+
+    /**
+     * Converts a square index (0-63) to chess notation (e.g., 'a8').
+     */
+    function indexToSquare(index) {
+        const rank = 8 - Math.floor(index / 8);
+        const file = String.fromCharCode('a'.charCodeAt(0) + (index % 8));
+        return file + rank;
+    }
+    
+    /**
+     * Updates the feedback message.
+     */
+    function showFeedback(message, type = 'info') {
+        feedbackElement.textContent = message;
+        feedbackElement.className = 'feedback message-box text-base w-full max-w-xs h-12 flex items-center justify-center';
+        if (type === 'success') {
+            feedbackElement.classList.add('feedback-success');
+        } else if (type === 'error') {
+            feedbackElement.classList.add('feedback-error');
+        }
+    }
+
+    /**
+     * Renders the chess board.
+     */
+    function renderBoard() {
+        boardElement.innerHTML = ''; 
+        
+        // Loop from 0 (a8) to 63 (h1)
+        for (let i = 0; i < 64; i++) {
+            const square = document.createElement('div');
+            const algSquare = indexToSquare(i);
+            square.dataset.square = algSquare;
+
+            // Determine square color: a8 is light, h8 is dark, a1 is dark, h1 is light
+            const isLight = (i % 2) === (Math.floor(i / 8) % 2); 
+            square.classList.add('square', (isLight ? 'light' : 'dark'));
+
+            // Highlight selected square
+            if (selectedSquare === algSquare) {
+                square.classList.add('selected');
+            }
+            
+            // Render piece if present
+            if (currentBoardState[algSquare]) {
+                const pieceData = currentBoardState[algSquare];
+                const piece = document.createElement('span');
+                piece.classList.add('piece'); 
+                piece.textContent = pieceData.symbol;
+                
+                // Set piece color
+                piece.style.color = pieceData.color === 'white' ? '#eee' : '#333';
+                square.appendChild(piece);
+                square.classList.add('piece-present'); 
+            }
+
+            // Attach click handler
+            square.addEventListener('click', () => handleSquareClick(algSquare));
+
+            boardElement.appendChild(square);
+        }
+    }
+
+    /**
+     * Handles the user's click on a square.
+     */
+    function handleSquareClick(squareId) {
+        if (isSolved) {
+            showFeedback(`The problem is solved! Mate was ${PROBLEM.correctMove}#.`, 'success');
+            return;
+        }
+
+        const pieceOnSquare = currentBoardState[squareId];
+
+        // 1. Selection: If no square is selected, and the user clicks the White Queen
+        if (!selectedSquare && pieceOnSquare && pieceOnSquare.color === 'white') {
+            if (squareId !== PROBLEM.startSquare) {
+                 showFeedback("You must move the Queen to deliver mate. Select the Queen on " + PROBLEM.startSquare + ".", 'error');
+                 return;
+            }
+            selectedSquare = squareId;
+            showFeedback(`Queen selected on ${squareId}. Now click the target square.`, 'info');
+        } 
+        // 2. Deselection: If the already selected square is clicked again
+        else if (selectedSquare === squareId) {
+            selectedSquare = null;
+            showFeedback("Selection cancelled. Click the Queen to try again.", 'info');
+        }
+        // 3. Move/Attempt: If a square is selected and the user clicks a different square
+        else if (selectedSquare) {
+            const start = selectedSquare;
+            const target = squareId;
+            
+            // Check if it's the correct mate move
+            if (start === PROBLEM.startSquare && target === PROBLEM.targetSquare) {
+                // Correct move logic
+                isSolved = true;
+                
+                // Perform the visual move
+                const queenPiece = currentBoardState[PROBLEM.startSquare];
+                const kingPiece = currentBoardState['h6'];
+                const blackKingPiece = currentBoardState['h8'];
+
+                // Clear the board state and set the new piece positions
+                currentBoardState = {};
+                currentBoardState[PROBLEM.targetSquare] = queenPiece; // Queen moves to h7
+                currentBoardState['h6'] = kingPiece; // White King stays
+                currentBoardState['h8'] = blackKingPiece; // Black King stays
+
+                showFeedback(`Checkmate! ${PROBLEM.correctMove}# is correct!`, 'success');
+            } else {
+                // Incorrect move logic
+                showFeedback(`Incorrect move. The mate is ${PROBLEM.correctMove}#. Try again.`, 'error');
+            }
+
+            // Reset selection state
+            selectedSquare = null;
+        }
+        
+        // Always re-render to update highlights or piece positions
+        renderBoard();
+    }
+
+    // Initialize the board when the window loads
+    window.onload = function() {
+        renderBoard();
+        showFeedback(`Click the white Queen (${PROBLEM.startSquare}) to select it.`, 'info');
+    };
   </script>
 </body>
 </html>

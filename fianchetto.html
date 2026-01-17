@@ -1,90 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Fianchetto — Online Chess Course</title>
-  <link rel="stylesheet" href="sicilian.css" />
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Fianchetto Defense — Online Chess Course</title>
+    <script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>:root{--bg-1:#1a1a1a;--bg-2:#0a0a0a;--accent:#f59e0b;--muted:#a3a3a3;--card:#1c1c1c;--radius:14px;--shadow-lg:0 10px 40px rgba(0,0,0,0.8);--shadow-md:0 6px 20px rgba(0,0,0,0.45);--ease:cubic-bezier(.2,.9,.3,1);}html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:radial-gradient(circle at center,var(--bg-1) 0%,var(--bg-2) 100%);color:#e6eef6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}.wrap{max-width:1100px;margin:32px auto;padding:0 28px;position:relative;min-height:calc(100vh - 120px);}.accent-shape{position:fixed;width:220px;height:220px;right:-80px;top:100px;background:radial-gradient(circle at 20% 20%,rgba(245, 158, 11, 0.15),transparent 30%),radial-gradient(circle at 80% 80%,rgba(245, 158, 11, 0.08),transparent 40%);border-radius:50%;filter:blur(24px);pointer-events:none;transform:translateZ(0);z-index:0;opacity:0.6;}.site-header{background:linear-gradient(90deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));box-shadow:var(--shadow-md);backdrop-filter:blur(6px);padding:10px 0;position:sticky;top:0;z-index:10;}.header-inner{max-width:1100px;margin:0 auto;padding:8px 28px;display:flex;align-items:center;gap:20px;}.logo{display:flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:var(--radius);color:var(--bg-2);background:linear-gradient(135deg,var(--accent),#ffbf00);font-size:30px;box-shadow:0 4px 12px rgba(0,0,0,0.5);flex-shrink:0;transition:transform 0.3s ease;}.logo:hover{transform:scale(1.05);}.logo svg{stroke:var(--bg-2);}.header-title h1{margin:0;font-size:24px;letter-spacing:0.2px;}.header-title p{margin:0;color:var(--muted);font-size:14px;}.top-nav a{padding:8px 14px;border-radius:999px;font-weight:600;text-decoration:none;color:black;background:linear-gradient(90deg,var(--accent),#ffbf00);box-shadow:0 4px 10px rgba(245, 158, 11, 0.4);transition:transform 0.2s var(--ease),box-shadow 0.2s var(--ease);}.top-nav a:hover{transform:translateY(-2px);box-shadow:0 6px 15px rgba(245, 158, 11, 0.6);}.hero{display:flex;align-items:center;gap:40px;background:linear-gradient(100deg,rgba(255,255,255,0.04),rgba(245, 158, 11, 0.05));border-radius:var(--radius);padding:30px;margin-top:40px;box-shadow:var(--shadow-md);border:1px solid rgba(255,255,255,0.1);}.hero-left h2{font-size:28px;font-weight:700;color:var(--accent);margin-top:0;margin-bottom:10px;}.hero-left p{font-size:16px;color:#ccc;}.hero img{width:100%;max-width:220px;border-radius:8px;box-shadow:0 8px 26px rgba(0,0,0,0.45);}.lesson-section{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;}.lesson-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:var(--radius);border:1px solid rgba(255,255,255,0.1);padding:24px;box-shadow:var(--shadow-md);transition:transform 0.3s var(--ease),box-shadow 0.3s var(--ease);}.lesson-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 10px var(--accent);}.lesson-card h3{font-size:20px;color:var(--accent);margin-top:0;margin-bottom:16px;}.lesson-card p{font-size:15px;color:#ccc;line-height:1.6;}.video-container{position:relative;width:100%;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);background:#000;}.video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}.board-placeholder{background:linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 100%);border:2px solid var(--accent);border-radius:var(--radius);padding:20px;text-align:center;color:var(--muted);font-size:14px;min-height:300px;display:flex;align-items:center;justify-content:center;}.summary-box{background:linear-gradient(135deg,rgba(245, 158, 11, 0.1),rgba(245, 158, 11, 0.05));border-left:4px solid var(--accent);border-radius:var(--radius);padding:20px;margin-top:24px;}.summary-box h4{color:var(--accent);margin-top:0;margin-bottom:10px;font-size:16px;}.summary-box p{color:#ddd;margin:8px 0;font-size:14px;line-height:1.6;}.site-footer{margin-top:60px;padding:18px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid rgba(255,255,255,0.05);}.site-footer a{color:var(--accent);text-decoration:none;transition:color 0.2s ease;}.site-footer a:hover{color:#fff;}@media (max-width:768px){.hero{flex-direction:column-reverse;text-align:center;}.hero img{max-width:180px;}.header-inner{flex-direction:column;align-items:center;gap:10px;padding:10px 20px;}.header-title{text-align:center;}.top-nav{margin-left:0 !important;}.lesson-section{grid-template-columns:1fr;}}
+    </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo">  <video src="CHESS HUB.mp4" type="video/mp4" height="90px" width="90px" style="border-radius: 15px;align-self: center;" autoplay loop muted playsinline>
-  </video></div>
-        <div>
-          <h1>Fianchetto</h1>
-          <p>Long-range bishop pressure from the flank</p>
+    <div class="accent-shape" aria-hidden="true"></div>
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2z"/><path d="M12 9a4 4 0 1 0-4 4h8a4 4 0 1 0-4-4z"/></svg></div>
+            <div class="header-title"><h1>Fianchetto Defense</h1><p>Hypermodern flexible system for Black</p></div>
+            <nav class="top-nav" style="margin-left:auto"><a href="index.html">Home</a></nav>
         </div>
-      </div>
     </header>
-
-    <main>
-      <section class="card" style="margin-top:20px;">
-        <h2>Description</h2>
-        <p>Fianchettoing the bishop (e.g., g3 and Bg2) aims for long-range control of key diagonals.
-           It’s commonly used in hypermodern systems, emphasizing flexibility and positional pressure
-           over immediate centre occupation.</p>
-      </section>
-
-      <div class="media-grid" style="margin-top:18px;">
-        <!-- Video card -->
-        <article class="media-card video-box" aria-label="Fianchetto lesson video">
-          <div class="media" role="region" aria-label="Video player">
-            <img class="poster" src="fianchetto.png" alt="Fianchetto poster" />
-            <button class="play-overlay" aria-label="Play video" data-video-id="kK0cq6UBt1Y">▶</button>
-          </div>
-          <div class="meta">
-            <div class="kv">
-              <h2 class="title">Fianchetto — Lesson</h2>
-              <span class="media-badge">Lesson</span>
+    <main class="wrap">
+        <section class="hero" aria-label="overview">
+            <div class="hero-left">
+                <h2>Master the Fianchetto Defense</h2>
+                <p>The Fianchetto Defense is a hypermodern approach where Black controls the center from a distance by fianchettoing the bishop on the long diagonal. This flexible system offers counterplay and practical winning chances against various White setups. Learn how to build a robust, flexible Black repertoire.</p>
             </div>
-            <p class="caption">Ideas, typical setups and how to exploit the long diagonal.</p>
-          </div>
-        </article>
-
-        <!-- Image card -->
-        <aside class="media-card image-box sidebar" aria-label="Fianchetto diagram">
-          <div class="media">
-            <img src="fianchetto.png" alt="Diagram: Fianchetto example" />
-          </div>
-          <div class="meta">
-            <h2 class="title">Position Diagram</h2>
-            <p class="caption">Reference diagram illustrating the fianchetto setup.</p>
-            <div style="margin-top:8px;display:flex;gap:8px;">
-              <a class="btn btn-primary" href="#" role="button">View more</a>
-              <a class="btn" href="fianchetto.png" download>Download</a>
+            <div style="width:220px; flex-shrink:0;"><img src="https://placehold.co/220x220/1a1a1a/f59e0b?text=Fianchetto+Defense" alt="An illustration of the Fianchetto Defense." loading="lazy"/></div>
+        </section>
+        <section class="lesson-section" aria-label="lesson content">
+            <div class="lesson-card">
+                <h3>📺 Lesson Video</h3>
+                <div class="video-container"><iframe src="https://www.youtube.com/embed/kK0cq6UBt1Y" title="Fianchetto Defense Lesson" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+                <p style="margin-top: 12px; font-size: 13px; color: var(--muted);">Learn hypermodern principles with the Fianchetto setup.</p>
             </div>
-          </div>
-        </aside>
-      </div>
+            <div class="lesson-card">
+                <h3>♟️ Solve the Position</h3>
+                <div class="board-placeholder">
+                    <div><p style="margin:0;font-size:14px;color:var(--accent);font-weight:600;">Interactive Chess Board</p>
+                    <p style="margin:8px 0 0 0;">Fianchetto middlegame</p>
+                    <p style="margin:12px 0 0 0;font-size:12px;color:var(--muted);">Find Black's counterattacking plan</p></div>
+                </div>
+                <p style="margin-top: 12px; font-size: 13px; color: var(--muted);">Master flexible Fianchetto strategies.</p>
+            </div>
+        </section>
+        <div class="summary-box">
+            <h4>⚡ Key Takeaways</h4>
+            <p><strong>...b6 setup</strong> — Fianchettoing bishop controls long diagonal</p>
+            <p><strong>Hypermodern approach</strong> — Controlling center from distance rather than occupation</p>
+            <p><strong>Flexible structure</strong> — Adapts to various White systems</p>
+            <p><strong>Counterplay focus</strong> — Maintains practical winning chances despite space disadvantage</p>
+            <p><strong>Reliable defense</strong> — Popular at all levels for flexible, solid play</p>
+        </div>
+        <footer class="site-footer">© Online Chess Course — <a href="index.html">Home</a></footer>
     </main>
-
-    <footer>
-      <div class="small">© Online Chess Course</div>
-      <div class="small">Made with ♟️</div>
-    </footer>
-  </div>
-
-  <script>
-    // lazy-load YouTube iframe on play
-    document.addEventListener('click', function (e) {
-      const btn = e.target.closest('.play-overlay');
-      if (!btn) return;
-      const container = btn.closest('.media');
-      const id = btn.getAttribute('data-video-id');
-      if (!id || !container) return;
-      const iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
-      iframe.title = 'Fianchetto lesson video';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.setAttribute('frameborder', '0');
-      iframe.setAttribute('allowfullscreen', '');
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      container.innerHTML = '';
-      container.appendChild(iframe);
-    });
-  </script>
+    <script>(function(){const cards=Array.from(document.querySelectorAll('.lesson-card'));const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.1});cards.forEach(card=>{card.style.opacity='0';card.style.transform='translateY(20px)';card.style.transition='all 0.5s var(--ease)';observer.observe(card);});})();</script>
 </body>
 </html>

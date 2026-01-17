@@ -1,111 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chess Endgames — Online Chess Course</title>
-  <link rel="stylesheet" href="endgame.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess Endgames — Online Chess Course</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Inline Styles and Theme (Consistent Dark/Amber theme) -->
+    <style>
+        :root{
+            /* Unified Dark/Amber Theme Variables */
+            --bg-1:#1a1a1a; /* Deep charcoal */
+            --bg-2:#0a0a0a; /* Pure black */
+            --accent:#f59e0b; /* Tailwind Amber-500 */
+            --muted:#a3a3a3; /* Gray-400 */
+            --card:#1c1c1c; /* Dark card background */
+            --radius:14px;
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.8);
+            --shadow-md: 0 6px 20px rgba(0,0,0,0.45);
+            --ease:cubic-bezier(.2,.9,.3,1);
+        }
+
+        html,body{
+            height:100%;
+            margin:0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: radial-gradient(circle at center, var(--bg-1) 0%, var(--bg-2) 100%);
+            color:#e6eef6;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+        }
+
+        .wrap{
+            max-width:1100px;
+            margin:32px auto;
+            padding:0 28px;
+            position:relative;
+            min-height: calc(100vh - 120px); /* Ensure space for footer */
+        }
+
+        /* Decorative Accent Shape (Amber/Gold glow) */
+        .accent-shape{
+            position:fixed;
+            width:220px;
+            height:220px;
+            right:-80px;
+            top:100px;
+            background: radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.15), transparent 30%),
+                        radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.08), transparent 40%);
+            border-radius:50%;
+            filter: blur(24px);
+            pointer-events:none;
+            transform:translateZ(0);
+            z-index:0;
+            opacity: 0.6;
+        }
+
+        /* Header Styling */
+        .site-header{
+            background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(6px);
+            padding:10px 0;
+            position:sticky;
+            top:0;
+            z-index:10;
+        }
+        .header-inner{
+            max-width:1100px;
+            margin:0 auto;
+            padding:8px 28px;
+            display:flex;
+            align-items:center;
+            gap:20px;
+        }
+
+        /* Logo Styling (Replaces video) */
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            border-radius: var(--radius);
+            color: var(--bg-2); /* Text color inside logo box */
+            background: linear-gradient(135deg, var(--accent), #ffbf00); /* Amber/Gold gradient */
+            font-size: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        /* SVG Pawn Icon for Logo */
+        .logo svg {
+            stroke: var(--bg-2);
+        }
+
+        .header-title h1{ margin:0; font-size:24px; letter-spacing:0.2px; }
+        .header-title p{ margin:0; color:var(--muted); font-size:14px; }
+
+        .top-nav a{
+            padding:8px 14px;
+            border-radius:999px;
+            font-weight:600;
+            text-decoration:none;
+            color: black;
+            background: linear-gradient(90deg, var(--accent), #ffbf00);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+            transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+        }
+        .top-nav a:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(245, 158, 11, 0.6);
+        }
+
+        /* Hero Section Styling */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            background: linear-gradient(100deg, rgba(255,255,255,0.04), rgba(245, 158, 11, 0.05));
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .hero-left h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .hero-left p {
+            font-size: 16px;
+            color: #ccc;
+        }
+        .hero img {
+            width: 100%;
+            max-width: 220px; /* Fixed width from original style */
+            border-radius: 8px;
+            box-shadow: 0 8px 26px rgba(0,0,0,0.45);
+        }
+
+        /* Grid Layout */
+        .grid{
+            display:grid;
+            grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+            gap:24px;
+            margin-top:40px;
+        }
+
+        /* Card Styling and Animations */
+        .card{
+            display:flex;
+            flex-direction:column;
+            background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border-radius:var(--radius);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+            text-decoration:none;
+            color:inherit;
+            overflow:hidden;
+            transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+            cursor:pointer;
+            
+            /* Initial state for stagger animation */
+            opacity:0;
+            transform:translateY(20px) scale(0.98);
+        }
+
+        /* Hover Animation (Lift and Shadow) */
+        .card:hover{
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 24px 50px rgba(0,0,0,0.8), 0 0 10px var(--accent);
+        }
+
+        /* Staggered Reveal State */
+        .card.in {
+            opacity: 1;
+            transform: none;
+        }
+
+        .card img{
+            width:100%;
+            height:180px;
+            object-fit:cover;
+            border-bottom:1px solid rgba(255,255,255,0.1);
+        }
+
+        .card .meta{
+            padding:18px 20px;
+            text-align:left;
+        }
+        .card .meta h3{
+            font-size:18px;
+            margin:0;
+            color:var(--accent);
+        }
+        .card .meta p{
+            font-size:14px;
+            margin:6px 0 0;
+            color:var(--muted);
+            line-height:1.4;
+        }
+
+        /* Footer */
+        .site-footer{
+            margin-top:40px;
+            padding:18px;
+            text-align:center;
+            color:var(--muted);
+            font-size:13px;
+            border-top:1px solid rgba(255,255,255,0.05);
+        }
+        .site-footer a{ color:var(--accent); text-decoration:none; transition:color 0.2s ease; }
+        .site-footer a:hover{ color:#fff; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column-reverse;
+                text-align: center;
+            }
+            .hero img {
+                max-width: 180px;
+            }
+            .header-inner {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 20px;
+            }
+            .header-title { text-align: center; }
+            .top-nav {
+                margin-left: 0 !important;
+                justify-content: center;
+                width: 100%;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="accent-shape" aria-hidden="true"></div>
+    <div class="accent-shape" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="logo" aria-hidden="true">  <video src="CHESS HUB.mp4" type="video/mp4" height="90px" width="90px" style="border-radius: 15px;align-self: center;" autoplay loop muted playsinline>
-  </video></div>
-      <div class="header-title">
-        <h1>Chess Endgames</h1>
-        <p>Practical conversion technique — mates & basic endgames</p>
-      </div>
-      <nav style="margin-left:auto">
-        <a style="margin-left:8px;padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,#17305b,#2a5b9c);color:#fff;text-decoration:none;font-weight:600" href="index.html">Home</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <section class="hero" aria-label="overview">
-      <div class="hero-left">
-        <h2>Master basic mating techniques</h2>
-        <p>Learn reliable methods to convert endgames: two rooks, single rook, queen mating patterns and bishop+knight technique. Each lesson contains a diagram, step-by-step guidance and a short practice video.</p>
-      </div>
-      <div style="width:220px;">
-        <img src="endgame-hero.png" alt="" style="width:100%;border-radius:8px;box-shadow:0 8px 26px rgba(2,6,23,0.45)" loading="lazy"/>
-      </div>
-    </section>
-
-    <section class="grid" aria-label="endgame lessons">
-      <a class="card" href="2rooks.html" data-animate>
-        <img src="2rooks.png" alt="Mate with two rooks" loading="lazy" />
-        <div class="meta">
-          <h3>Mate with 2 Rooks</h3>
-          <p>Reliable ladder mate and conversion tips.</p>
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo" aria-hidden="true">
+                <!-- SVG Pawn Icon (Replaces CHESS HUB.mp4 video) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 21a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2z"/>
+                    <path d="M12 9a4 4 0 1 0-4 4h8a4 4 0 1 0-4-4z"/>
+                </svg>
+            </div>
+            <div class="header-title">
+                <h1>Chess Endgames</h1>
+                <p>Practical conversion technique — mates & basic endgames</p>
+            </div>
+            <nav class="top-nav" style="margin-left:auto">
+                <a href="index.html">Home</a>
+            </nav>
         </div>
-      </a>
+    </header>
 
-      <a class="card" href="1rook.html" data-animate>
-        <img src="1rook.png" alt="Mate with one rook" loading="lazy" />
-        <div class="meta">
-          <h3>Mate with 1 Rook</h3>
-          <p>Simple rook + king method and common pitfalls.</p>
-        </div>
-      </a>
+    <main class="wrap">
+        <section class="hero" aria-label="overview">
+            <div class="hero-left">
+                <h2>Master basic mating techniques</h2>
+                <p>Learn reliable methods to convert endgames: two rooks, single rook, queen mating patterns and bishop+knight technique. Each lesson contains a diagram, step-by-step guidance and a short practice video.</p>
+            </div>
+            <div style="width:220px; flex-shrink:0;">
+                <!-- Placeholder for endgame-hero.png -->
+                <img src="https://placehold.co/220x220/1a1a1a/f59e0b?text=Endgame+Study" alt="An illustration of a chess endgame position." loading="lazy"/>
+            </div>
+        </section>
 
-      <a class="card" href="queen.html" data-animate>
-        <img src="queen.png" alt="Mate with queen" loading="lazy" />
-        <div class="meta">
-          <h3>Mate with 1 Queen</h3>
-          <p>Technique and king support for forcing mate.</p>
-        </div>
-      </a>
+        <section class="grid" aria-label="endgame lessons">
+            <!-- Card 1: Mate with 2 Rooks -->
+            <a class="card" href="2rooks.html" data-animate>
+                <!-- Placeholder for 2rooks.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=2+Rooks+Mate" alt="Mate with two rooks diagram" loading="lazy" />
+                <div class="meta">
+                    <h3>Mate with 2 Rooks</h3>
+                    <p>Reliable ladder mate and conversion tips.</p>
+                </div>
+            </a>
 
-      <a class="card" href="queenandrook.html" data-animate>
-        <img src="queenandrook.png" alt="Queen and rook mate" loading="lazy" />
-        <div class="meta">
-          <h3>Mate with Queen & Rook</h3>
-          <p>Coordinated major piece mating patterns.</p>
-        </div>
-      </a>
+            <!-- Card 2: Mate with 1 Rook -->
+            <a class="card" href="1rook.html" data-animate>
+                <!-- Placeholder for 1rook.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=1+Rook+Mate" alt="Mate with one rook diagram" loading="lazy" />
+                <div class="meta">
+                    <h3>Mate with 1 Rook</h3>
+                    <p>Simple rook + king method and common pitfalls.</p>
+                </div>
+            </a>
 
-      <a class="card" href="2bishops.html" data-animate>
-        <img src="2bishops.png" alt="Mate with two bishops" loading="lazy" />
-        <div class="meta">
-          <h3>Mate with 2 Bishops</h3>
-          <p>Method to drive lone king to the corner.</p>
-        </div>
-      </a>
+            <!-- Card 3: Mate with 1 Queen -->
+            <a class="card" href="queen.html" data-animate>
+                <!-- Placeholder for queen.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=1+Queen+Mate" alt="Mate with queen diagram" loading="lazy" />
+                <div class="meta">
+                    <h3>Mate with 1 Queen</h3>
+                    <p>Technique and king support for forcing mate.</p>
+                </div>
+            </a>
 
-      <a class="card" href="bishopandknight.html" data-animate>
-        <img src="bishopandknight.png" alt="Bishop and knight mate" loading="lazy" />
-        <div class="meta">
-          <h3>Mate with Bishop & Knight</h3>
-          <p>Step-by-step coordination for the hardest basic mate.</p>
-        </div>
-      </a>
-    </section>
+             <!-- Card 5: Mate with 2 Bishops -->
+            <a class="card" href="2bishops.html" data-animate>
+                <!-- Placeholder for 2bishops.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=2+Bishops+Mate" alt="Mate with two bishops diagram" loading="lazy" />
+                <div class="meta">
+                    <h3>Mate with 2 Bishops</h3>
+                    <p>Method to drive lone king to the corner.</p>
+                </div>
+            </a>
 
-    <footer class="site-footer">
-      © Online Chess Course — <a href="index.html">Home</a>
-    </footer>
-  </main>
+            <!-- Card 6: Mate with Bishop & Knight -->
+            <a class="card" href="bishopandknight.html" data-animate>
+                <!-- Placeholder for bishopandknight.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=B+%26+N+Mate" alt="Bishop and knight mate diagram" loading="lazy" />
+                <div class="meta">
+                    <h3>Mate with Bishop & Knight</h3>
+                    <p>Step-by-step coordination for the hardest basic mate.</p>
+                </div>
+            </a>
 
-  <script>
-    (function(){
-      const items = Array.from(document.querySelectorAll('[data-animate]'));
-      const io = new IntersectionObserver((entries)=>{
-        entries.forEach(e=>{
-          if(e.isIntersecting){
-            const el = e.target;
-            el.style.transitionDelay = (items.indexOf(el) * 60) + 'ms';
-            el.classList.add('in');
-            io.unobserve(el);
-          }
-        });
-      }, {threshold:0.12});
-      items.forEach(i=>io.observe(i));
-    })();
-  </script>
+        </section>
+
+        <footer class="site-footer">
+            © Online Chess Course — <a href="index.html">Home</a>
+        </footer>
+    </main>
+
+    <script>
+        // reveal on scroll + gentle stagger
+        (function(){
+            const items = Array.from(document.querySelectorAll('[data-animate]'));
+            const io = new IntersectionObserver((entries)=>{
+                entries.forEach(e=>{
+                    if(e.isIntersecting){
+                        const el = e.target;
+                        // Calculate staggered delay based on index
+                        el.style.transitionDelay = (items.indexOf(el) * 60) + 'ms';
+                        el.classList.add('in');
+                        io.unobserve(el);
+                    }
+                });
+            }, {threshold:0.1});
+            items.forEach(i=>io.observe(i));
+        })();
+    </script>
 </body>
 </html>
-
-          <

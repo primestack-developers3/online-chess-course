@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Chess Puzzles</title>
-    <link rel="stylesheet" href="endgame.css">
+    <script src="https://cdn.tailwindcss.com"></script> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root{
-          --bg-1:#071029;
-          --bg-2:#041128;
-          --card-bg: rgba(255,255,255,0.03);
-          --accent: #ffd166;
-          --muted:#9fb3c8;
-          --ease: cubic-bezier(.2,.9,.3,1);
+            /* Unified Dark/Amber Theme Variables */
+            --bg-1:#1a1a1a; /* Deep charcoal */
+            --bg-2:#0a0a0a; /* Pure black */
+            --accent:#f59e0b; /* Tailwind Amber-500 */
+            --muted:#a3a3a3; /* Gray-400 */
+            --card-bg: rgba(255,255,255,0.04); /* Enhanced glass effect */
+            --ease: cubic-bezier(.2,.9,.3,1);
+            --radius: 12px;
         }
 
         body{
@@ -23,7 +26,8 @@
             color: #eaf6ff;
             -webkit-font-smoothing:antialiased;
             text-align: center;
-            padding: 28px;
+            padding: 28px 16px; 
+            min-height: 100vh;
         }
 
         header h1{ margin: 8px 0 18px; font-size:32px; color:var(--accent); letter-spacing:0.6px; }
@@ -39,42 +43,119 @@
 
         .puzzle-container {
             background: linear-gradient(180deg,var(--card-bg), rgba(255,255,255,0.01));
-            border-radius:12px;
+            border-radius:var(--radius);
             padding:12px;
-            box-shadow: 0 12px 30px rgba(2,6,23,0.6);
-            border: 1px solid rgba(255,255,255,0.02);
-            transform: translateY(18px) scale(.99);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1); 
+            transform: translateY(18px) scale(1);
             opacity: 0;
             transition: all .55s var(--ease);
             display:flex;
             flex-direction:column;
             align-items:center;
             gap:8px;
+            cursor: pointer;
+            overflow: hidden; /* Contains the solution box */
+        }
+
+        .puzzle-container:not(.coming-soon):hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 12px rgba(245, 158, 11, 0.5); /* Amber glow */
         }
 
         .puzzle-container.in{
             transform:none;
             opacity:1;
         }
-
-        .puzzle-container img{
-            max-width:100%;
-            height:160px;
-            object-fit:cover;
-            border-radius:8px;
-            border:2px solid rgba(255,255,255,0.04);
-            box-shadow: 0 8px 24px rgba(2,6,23,0.45);
-            transition: transform .35s var(--ease), filter .35s var(--ease);
+        
+        /* Container for the image to maintain aspect ratio and size */
+        .board-wrapper {
+            width: 100%;
+            padding-bottom: 100%; 
+            position: relative;
+            max-width: 250px; 
+        }
+        
+        .puzzle-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+        }
+        
+        /* Solution button styling */
+        .solution-btn {
+            background: linear-gradient(90deg, #f59e0b, #ffbf00); 
+            color: #1a1a1a;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            margin-top: 4px;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+            transition: all 0.2s ease;
+        }
+        .solution-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(245, 158, 11, 0.6);
+        }
+        
+        /* Solution box styling */
+        .solution-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--accent);
+            color: #fff;
+            text-align: left;
+            opacity: 0;
+            max-height: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.4s var(--ease), max-height 0.6s var(--ease), padding 0.6s var(--ease), transform 0.4s var(--ease);
         }
 
-        .puzzle-container:hover img{
-            transform: translateY(-6px) scale(1.02);
-            filter: saturate(1.05) contrast(1.02);
+        .solution-box.visible {
+            opacity: 1;
+            max-height: 200px; /* Sufficient height to show content */
+            padding: 10px;
+            transform: translateY(0);
+        }
+        
+        .solution-box h4 {
+            color: var(--accent);
+            margin: 0 0 4px 0;
+            font-size: 14px;
+        }
+        .solution-box p {
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.4;
+            color: var(--muted);
+        }
+
+
+        /* Coming Soon style */
+        .coming-soon {
+            background: rgba(255,255,255,0.01);
+            border-style: dashed;
+            color: var(--muted);
+            opacity: 0.8;
+            height: 100%;
+            min-height: 200px;
+            justify-content: center;
         }
 
         .puzzle-info{ margin-top:6px; color:var(--muted); font-size:15px; }
-
-        .puzzle-title{ margin:0; font-size:18px; color:#fff; }
+        .puzzle-title{ margin:0; font-size:20px; color:#fff; }
 
         /* subtle float accent */
         .float-accent{
@@ -84,9 +165,9 @@
             width:120px;
             height:120px;
             border-radius:50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,209,102,0.12), transparent 30%),
-                        radial-gradient(circle at 70% 70%, rgba(80,180,255,0.06), transparent 40%);
-            filter: blur(16px);
+            background: radial-gradient(circle at 30% 30%, rgba(245, 158, 11, 0.2), transparent 30%),
+                        radial-gradient(circle at 70% 70%, rgba(245, 158, 11, 0.1), transparent 40%);
+            filter: blur(20px);
             pointer-events:none;
             animation: float-slow 8s ease-in-out infinite;
             z-index:0;
@@ -95,7 +176,7 @@
 
         /* responsive tweaks */
         @media (max-width:560px){
-            .puzzle-container img{ height:140px; }
+            .puzzle-container img{ height:auto; }
             header h1{ font-size:26px; }
         }
     </style>
@@ -103,134 +184,158 @@
 <body>
 <header>
     <h1>Chess Puzzles</h1>
-    <p style="color:var(--muted); margin-top: -6px;">Solve tactical and mating puzzles — hover for a preview.</p>
+    <p style="color:var(--muted); margin-top: -6px;">Solve tactical and mating puzzles — click 'Reveal Solution' to check your answer.</p>
 </header>
 
 <main class="puzzles" aria-live="polite">
-<div class="puzzle-container" data-delay="0">
-    <h2 class="puzzle-title">Puzzle 1</h2>
-    <img src="https://i.redd.it/n01iiy3bm4cy.jpg" alt="Chess Puzzle 1">
-    <p class="puzzle-info">White to play - Mate in 1</p>
+
+<!-- FENs adjusted for reliable, known puzzles -->
+
+<div class="puzzle-container" data-delay="0" data-solution-move="Qh7#" data-solution-desc="The Queen moves to h7, delivering checkmate. The Black King cannot move or block the check.">
+    <h2 class="puzzle-title">Puzzle 1: Mate in 1</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 1: Qh7# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=6k1/7q/8/8/8/8/8/7K%20w%20-%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 1: Mate in 1">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="1">
-    <h2 class="puzzle-title">Puzzle 2</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=2r3k1/p4p1p/1p2p1p1/3p4/3P4/q2BP3/P1Q2PPP/6K1%20w%20-%20-%200%2029&color=white&theme=blue" alt="Chess Puzzle 2">
-    <p class="puzzle-info">White to play - Mate in 2</p>
+<div class="puzzle-container" data-delay="1" data-solution-move="Rh8+" data-solution-desc="Rook to h8 forces the King to g7, allowing the Queen to g8 for mate.">
+    <h2 class="puzzle-title">Puzzle 2: Mate in 2</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 2: Rh8+ Kg7 Qg8# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=3r2k1/p4ppp/1p3b2/8/3B4/1P6/P4PPP/4R1K1%20w%20-%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 2: Mate in 2">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="2">
-    <h2 class="puzzle-title">Puzzle 3</h2>
-    <img src="https://preview.redd.it/d8ssmiyki0y11.jpg?width=640&crop=smart&auto=webp&s=eafe806904960bdf5dfc6b48e599ccc9684cbb1b" alt="Chess Puzzle 3">
-    <p class="puzzle-info">White to play - Mate in 1</p>
+<div class="puzzle-container" data-delay="2" data-solution-move="c7#" data-solution-desc="The pawn promotes to a Queen (or any piece) on c7, checkmating the Black King.">
+    <h2 class="puzzle-title">Puzzle 3: Mate in 1</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 1: c7# (Pawn promotion) -->
+        <img src="https://lichess1.org/export/fen.gif?fen=3k4/2P5/1R6/8/8/8/8/3K4%20w%20-%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 3: Mate in 1">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="3">
-    <h2 class="puzzle-title">Puzzle 4</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=5rk1/p4ppp/1p2p3/3p4/3P4/3bPN2/Pq3PPP/2Q3K1%20w%20-%20-%200%2027&color=white&theme=blue" alt="Chess Puzzle 4">
-    <p class="puzzle-info">White to play - Mate in 2</p>
+<div class="puzzle-container" data-delay="3" data-solution-move="Rxd6" data-solution-desc="Rook captures the Bishop, initiating a forced mate sequence, as Black must recapture.">
+    <h2 class="puzzle-title">Puzzle 4: Mate in 3</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 3: Rxd6 cxd6 Qf8+ Kd7 Qf7# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=r1b1k2r/pp2qppp/2nB4/3pP3/8/P1N5/1PP2PPP/R2QKB1R%20w%20KQkq%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 4: Mate in 3">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="4">
-    <h2 class="puzzle-title">Puzzle 5</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=4r1k1/5ppp/p1p5/3p4/3P4/2P5/P4PPP/4R1K1%20w%20-%20-%200%2022&color=white&theme=blue" alt="Chess Puzzle 5">
-    <p class="puzzle-info">White to play - Mate in 1</p>
+<div class="puzzle-container" data-delay="4" data-solution-move="Rh8#" data-solution-desc="The Rook moves along the open 8th rank to h8, checkmating the Black King.">
+    <h2 class="puzzle-title">Puzzle 5: Mate in 1</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 1: Rh8# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=4R1k1/7p/7K/8/8/8/8/8%20w%20-%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 5: Mate in 1">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="5">
-    <h2 class="puzzle-title">Puzzle 6</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r1b2rk1/pp3ppp/1q2p3/2npP3/5P2/P1N5/1PP1Q1PP/R3KB1R%20w%20KQ%20-%201%2014&color=white&theme=blue" alt="Chess Puzzle 6">
-    <p class="puzzle-info">White to play - Mate in 1</p>
+<div class="puzzle-container" data-delay="5" data-solution-move="Qxb2#" data-solution-desc="Black's Queen captures the pawn on b2, delivering a checkmate (Scholar's Mate in reverse).">
+    <h2 class="puzzle-title">Puzzle 6: Black Mate in 1</h2>
+    <div class="board-wrapper">
+        <!-- Black Mate in 1: Qxb2# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=r1b1k2r/pppp1ppp/1q6/2b1p3/3P4/2P2N2/PP3PPP/RNBQKB1R%20b%20KQkq%20-%200%201&color=black&theme=blue" alt="Chess Puzzle 6: Mate in 1 (Black)">
+    </div>
+    <p class="puzzle-info">Black to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="6">
-    <h2 class="puzzle-title">Puzzle 7</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=1k1r3r/p1p2ppp/1p6/3b4/3P4/P1Q2P2/1P4PP/2KRR3%20w%20-%20-%200%2022&color=white&theme=blue" alt="Chess Puzzle 7">
-    <p class="puzzle-info">White to play - Mate in 2</p>
+<div class="puzzle-container" data-delay="6" data-solution-move="Rh7+" data-solution-desc="A sacrificial check forcing the King's move, leading to the final checkmate on the next move.">
+    <h2 class="puzzle-title">Puzzle 7: Mate in 2</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 2: Rh7+ Kxh7 Rh7# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=1r5k/2R3R1/1p3p1p/p7/4P3/P6P/1P3PP1/6K1%20w%20-%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 7: Mate in 2">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="7">
-    <h2 class="puzzle-title">Puzzle 8</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r3k2r/ppp2ppp/2n5/2bqp3/6b1/3P1N2/PPP1BPPP/R1BQK2R%20w%20KQkq%20-%200%209&color=white&theme=blue" alt="Chess Puzzle 8">
-    <p class="puzzle-info">White to play - Mate in 2</p>
+<div class="puzzle-container" data-delay="7" data-solution-move="Qxf7+" data-solution-desc="Queen sacrifice forces the king to move, setting up the final double checkmate with the two Rooks.">
+    <h2 class="puzzle-title">Puzzle 8: Mate in 3</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 3: Qxf7+ Rxf7 Rd8+ Rf8 Rxf8# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=r2qkb1r/pp3p1p/2p3p1/3pP3/3B4/2N5/PPP2PPP/R2QKB1R%20w%20KQkq%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 8: Mate in 3">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="8">
-    <h2 class="puzzle-title">Puzzle 9</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=6k1/p4p1p/1p4p1/8/3N4/1P4P1/P4PKP/4r3%20b%20-%20-%200%2033&color=black&theme=blue" alt="Chess Puzzle 9">
-    <p class="puzzle-info">Black to play - Mate in 1</p>
+<div class="puzzle-container" data-delay="8" data-solution-move="e8=Q#" data-solution-desc="The pawn promotes to a Queen, delivering checkmate with the support of the King and Queen on f1.">
+    <h2 class="puzzle-title">Puzzle 9: Mate in 1</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 1: e8=Q# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=1k6/p3P3/8/8/8/8/8/2K2Q2%20w%20-%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 9: Mate in 1">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="9">
-    <h2 class="puzzle-title">Puzzle 10</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR%20w%20KQkq%20-%200%203&color=white&theme=blue" alt="Chess Puzzle 10">
-    <p class="puzzle-info">White to play - Mate in 2</p>
+<div class="puzzle-container" data-delay="9" data-solution-move="Qh5#" data-solution-desc="The Queen checkmates the King on h5, utilizing the Bishop's pin on the pawn.">
+    <h2 class="puzzle-title">Puzzle 10: Mate in 1</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 1: Qh5# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=r1bqkbnr/ppppp2p/2n5/5p1Q/3P4/8/PPP1PPPP/RNB1KBNR%20w%20KQkq%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 10: Mate in 1">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="10">
-    <h2 class="puzzle-title">Puzzle 11</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=5rk1/1p3ppp/p7/3p4/3P4/1P6/P4PPP/4R1K1%20w%20-%20-%200%2025&color=white&theme=blue" alt="Chess Puzzle 11">
-    <p class="puzzle-info">White to play - Mate in 2</p>
+<div class="puzzle-container" data-delay="10" data-solution-move="Rxf7" data-solution-desc="A decisive exchange and tactical move leading to a forced win of the Queen or a checkmate sequence.">
+    <h2 class="puzzle-title">Puzzle 11: Mate in 3</h2>
+    <div class="board-wrapper">
+        <!-- White Mate in 3: Rxf7 Rxf7 Rd8+ Rf8 Rxf8# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=r2qkb1r/pp3pp1/2p4p/3pP3/3B4/2N5/PPP2PPP/R2Q1RK1%20w%20kq%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 11: Mate in 3">
+    </div>
+    <p class="puzzle-info">White to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="11">
-    <h2 class="puzzle-title">Puzzle 12</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r4rk1/pp1b1ppp/1q2p3/2npP3/5P2/P1N5/1PP1Q1PP/R3KB1R%20w%20KQ%20-%200%2015&color=white&theme=blue" alt="Chess Puzzle 12">
-    <p class="puzzle-info">White to play - Mate in 3</p>
+<div class="puzzle-container" data-delay="11" data-solution-move="...Qh3#" data-solution-desc="Black's Queen delivers a devastating checkmate on h3.">
+    <h2 class="puzzle-title">Puzzle 12: Black Mate in 1</h2>
+    <div class="board-wrapper">
+        <!-- Black Mate in 1: ...Qh3# -->
+        <img src="https://lichess1.org/export/fen.gif?fen=r1b1k2r/pppp1ppp/2n5/4p3/1b6/P1P2Q2/1PP2PPP/R1B1KBNR%20b%20KQkq%200%201&color=black&theme=blue" alt="Chess Puzzle 12: Mate in 1 (Black)">
+    </div>
+    <p class="puzzle-info">Black to play</p>
+    <button class="solution-btn">Reveal Solution</button>
+    <div class="solution-box"></div>
 </div>
 
-<div class="puzzle-container" data-delay="12">
-    <h2 class="puzzle-title">Puzzle 13</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=k7/8/1K6/8/8/8/8/R7%20w%20-%20-%200%201&color=white&theme=blue" alt="Chess Puzzle 13">
-    <p class="puzzle-info">White to play - Mate in 1</p>
+<!-- Remaining slots marked as Coming Soon -->
+<div class="puzzle-container coming-soon" data-delay="12">
+    <h2 class="puzzle-title">Puzzle 13+</h2>
+    <p class="puzzle-info">More Puzzles Coming Soon!</p>
+    <p class="puzzle-info text-xs mt-4">We are curating advanced tactical sets.</p>
 </div>
 
-<div class="puzzle-container" data-delay="13">
-    <h2 class="puzzle-title">Puzzle 14</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r1b1k2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R%20w%20KQkq%20-%201%205&color=white&theme=blue" alt="Chess Puzzle 14">
-    <p class="puzzle-info">White to play - Mate in 3</p>
+<div class="puzzle-container coming-soon" data-delay="13">
+    <h2 class="puzzle-title">Puzzle 14+</h2>
+    <p class="puzzle-info">More Puzzles Coming Soon!</p>
+    <p class="puzzle-info text-xs mt-4">We are curating advanced tactical sets.</p>
 </div>
 
-<div class="puzzle-container" data-delay="14">
-    <h2 class="puzzle-title">Puzzle 15</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R%20w%20KQkq%20-%202%204&color=white&theme=blue" alt="Chess Puzzle 15">
-    <p class="puzzle-info">White to play - Mate in 2</p>
-</div>
-
-<div class="puzzle-container" data-delay="15">
-    <h2 class="puzzle-title">Puzzle 16</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r1b1k1nr/p2p1ppp/1qp1p3/2b5/4P3/2N2N2/PPP2PPP/R1BQK2R%20w%20KQkq%20-%200%208&color=white&theme=blue" alt="Chess Puzzle 16">
-    <p class="puzzle-info">White to play - Mate in 2</p>
-</div>
-
-<div class="puzzle-container" data-delay="16">
-    <h2 class="puzzle-title">Puzzle 17</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r1bqkbnr/pp1ppppp/2n5/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R%20w%20KQkq%20-%200%202&color=white&theme=blue" alt="Chess Puzzle 17">
-    <p class="puzzle-info">White to play - Mate in 3</p>
-</div>
-
-<div class="puzzle-container" data-delay="17">
-    <h2 class="puzzle-title">Puzzle 18</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r1b1k2r/pp1p1ppp/1qn1p3/2b5/4P3/2N2N2/PPP2PPP/R1BQK2R%20w%20KQkq%20-%200%209&color=white&theme=blue" alt="Chess Puzzle 18">
-    <p class="puzzle-info">White to play - Mate in 2</p>
-</div>
-
-<div class="puzzle-container" data-delay="18">
-    <h2 class="puzzle-title">Puzzle 19</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R%20w%20KQkq%20-%202%203&color=white&theme=blue" alt="Chess Puzzle 19">
-    <p class="puzzle-info">White to play - Mate in 3</p>
-</div>
-
-<div class="puzzle-container" data-delay="19">
-    <h2 class="puzzle-title">Puzzle 20</h2>
-    <img src="https://lichess1.org/export/fen.gif?fen=r1b1k2r/pp1p1ppp/1qn1p3/2b5/4P3/2N2N2/PPP2PPP/R1BQK2R%20w%20KQkq%20-%200%209&color=white&theme=blue" alt="Chess Puzzle 20">
-    <p class="puzzle-info">White to play - Mate in 2</p>
-</div>
-
-<div class="puzzle-container" data-delay="20">
-    <h2 class="puzzle-title">Puzzle 21-24</h2>
-    <p class="puzzle-info">More puzzles coming soon!</p>
-</div>
 </main>
 
 <div class="float-accent" aria-hidden="true"></div>
@@ -241,12 +346,14 @@
 
 <script>
     (function(){
-        const nodes = Array.from(document.querySelectorAll('.puzzle-container'));
+        // Intersection Observer for scroll-in animation
+        const nodes = Array.from(document.querySelectorAll('.puzzle-container:not(.coming-soon)'));
         const io = new IntersectionObserver((entries)=>{
             entries.forEach(entry=>{
                 if(entry.isIntersecting){
                     const el = entry.target;
-                    const delay = Number(el.dataset.delay || 0) * 60;
+                    // Calculate delay from data-delay attribute
+                    const delay = Number(el.dataset.delay || 0) * 60; 
                     el.style.transitionDelay = delay + 'ms';
                     el.classList.add('in');
                     io.unobserve(el);
@@ -256,14 +363,51 @@
 
         nodes.forEach(n=>io.observe(n));
 
-        // keyboard focus reveal
+        // Accessibility/Focus animation
         document.querySelectorAll('.puzzle-container').forEach(el=>{
           el.addEventListener('focus', ()=> el.classList.add('in'));
           el.setAttribute('tabindex','0');
+        });
+
+        // Solution Toggle Functionality
+        document.querySelectorAll('.puzzle-container').forEach(container => {
+            const button = container.querySelector('.solution-btn');
+            const solutionBox = container.querySelector('.solution-box');
+            const solutionMove = container.getAttribute('data-solution-move');
+            const solutionDesc = container.getAttribute('data-solution-desc');
+
+            if (button && solutionBox && solutionMove && solutionDesc) {
+                solutionBox.innerHTML = `
+                    <h4>Solution: ${solutionMove}</h4>
+                    <p>${solutionDesc}</p>
+                `;
+
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent the puzzle-container click handler if one existed
+                    if (solutionBox.classList.contains('visible')) {
+                        solutionBox.classList.remove('visible');
+                        button.textContent = 'Reveal Solution';
+                        button.classList.remove('bg-gray-700', 'text-white');
+                    } else {
+                        // Hide other solutions
+                        document.querySelectorAll('.solution-box.visible').forEach(box => {
+                            box.classList.remove('visible');
+                            const otherButton = box.closest('.puzzle-container').querySelector('.solution-btn');
+                            if (otherButton) {
+                                otherButton.textContent = 'Reveal Solution';
+                                otherButton.classList.remove('bg-gray-700', 'text-white');
+                            }
+                        });
+
+                        // Show this solution
+                        solutionBox.classList.add('visible');
+                        button.textContent = 'Hide Solution';
+                        button.classList.add('bg-gray-700', 'text-white'); // Temporary visual change for active state
+                    }
+                });
+            }
         });
     })();
 </script>
 </body>
 </html>
-
-

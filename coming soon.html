@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon - Chess Lessons</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+            background: #0d0d0d;
+            padding: 60px 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+            border: 2px solid #ffc107;
+        }
+        
+        .coming-soon-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #ffc107;
+            font-size: 48px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            color: #ffed4e;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .description {
+            color: #cccccc;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        
+        .upcoming-lessons {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            text-align: left;
+            border: 1px solid #ffc107;
+        }
+        
+        .upcoming-lessons h2 {
+            color: #ffc107;
+            font-size: 22px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .lesson-item {
+            padding: 12px 0;
+            color: #e0e0e0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .lesson-item:last-child {
+            border-bottom: none;
+        }
+        
+        .lesson-item::before {
+            content: "♟ ";
+            color: #ffc107;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .email-signup {
+            margin-bottom: 30px;
+        }
+        
+        .email-signup input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-family: inherit;
+            background: #1a1a1a;
+            color: #ffc107;
+        }
+        
+        .email-signup input::placeholder {
+            color: #666;
+        }
+        
+        .email-signup button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ffc107 0%, #ffed4e 100%);
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .email-signup button:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #ffed4e 0%, #ffc107 100%);
+        }
+        
+        .footer {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #ffc107;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .back-link:hover {
+            color: #ffed4e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="coming-soon-icon">🎯</div>
+        
+        <h1>Coming Soon</h1>
+        <p class="subtitle">Exciting New Chess Lessons</p>
+        
+        <p class="description">
+            We're preparing some amazing chess courses to help you improve your game. 
+            Stay tuned for updates on our upcoming lessons!
+        </p>
+        
+        <div class="upcoming-lessons">
+            <h2>Upcoming Topics</h2>
+            <div class="lesson-item">Sicilian Defense Advanced Variations</div>
+            <div class="lesson-item">Endgame Mastery - Pawn Endings</div>
+            <div class="lesson-item">Middle Game Tactics & Strategy</div>
+            <div class="lesson-item">Opening Principles & Planning</div>
+            <div class="lesson-item">Positional Chess Concepts</div>
+        </div>
+        
+        <div class="email-signup">
+            <input type="email" placeholder="Enter your email to be notified">
+            <button onclick="handleSubscribe()">Notify Me</button>
+        </div>
+        
+        <p class="footer">Check back soon for more updates!</p>
+        
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+    
+    <script>
+        function handleSubscribe() {
+            const email = document.querySelector('input[type="email"]').value;
+            if (email) {
+                alert('Thank you! We\'ll notify you when new lessons are available.');
+                document.querySelector('input[type="email"]').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+    </script>
+</body>
+</html>

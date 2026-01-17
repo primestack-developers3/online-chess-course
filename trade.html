@@ -2,87 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Trading pieces — Online Chess Course</title>
-  <link rel="stylesheet" href="sicilian.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trading Pieces — Endgame Lesson</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{--bg-1:#1a1a1a;--bg-2:#0a0a0a;--accent:#f59e0b;--muted:#a3a3a3;--card:#1c1c1c;--radius:14px;--shadow-lg:0 10px 40px rgba(0,0,0,0.8);--shadow-md:0 6px 20px rgba(0,0,0,0.45);--ease:cubic-bezier(.2,.9,.3,1);--light-square:#f0d9b5;--dark-square:#b58863;}html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:radial-gradient(circle at center,var(--bg-1) 0%,var(--bg-2) 100%);color:#e6eef6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}.wrap{max-width:960px;margin:32px auto;padding:0 28px;position:relative;min-height:calc(100vh - 120px);}.accent-shape{position:fixed;width:220px;height:220px;right:-80px;top:100px;background:radial-gradient(circle,rgba(245,158,11,0.15),transparent);border-radius:50%;pointer-events:none;z-index:-1;}.site-header{position:sticky;top:0;z-index:999;background:rgba(26,26,26,0.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1);padding:18px 0;margin-bottom:32px;}.site-header-content{max-width:960px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;}.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--accent);font-weight:700;font-size:18px;}.logo svg{width:32px;height:32px;fill:var(--accent);}.hero{background:linear-gradient(100deg,rgba(255,255,255,0.04),rgba(245,158,11,0.05));border-radius:var(--radius);padding:30px;margin-top:40px;box-shadow:var(--shadow-md);border:1px solid rgba(255,255,255,0.1);}.hero h2{font-size:28px;font-weight:700;color:var(--accent);margin-top:0;margin-bottom:10px;}.hero p{font-size:16px;color:#ccc;}.lesson-section{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;}.lesson-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:var(--radius);border:1px solid rgba(255,255,255,0.1);padding:24px;box-shadow:var(--shadow-md);transition:transform 0.3s var(--ease),box-shadow 0.3s var(--ease);}.lesson-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 10px var(--accent);}.lesson-card h3{font-size:20px;color:var(--accent);margin-top:0;margin-bottom:16px;}.lesson-card p{font-size:15px;color:#ccc;line-height:1.6;}.video-container{position:relative;width:100%;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);background:#000;}.video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}.board-placeholder{background:linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 100%);border:2px solid var(--accent);border-radius:var(--radius);padding:20px;text-align:center;color:var(--muted);font-size:14px;min-height:300px;display:flex;align-items:center;justify-content:center;}.summary-box{background:linear-gradient(100deg,rgba(255,255,255,0.04),rgba(245,158,11,0.05));border-radius:var(--radius);padding:24px;margin-top:40px;box-shadow:var(--shadow-md);border:1px solid rgba(255,255,255,0.1);}.summary-box h4{color:var(--accent);font-size:18px;margin-top:0;margin-bottom:12px;}.summary-box p{color:#e6eef6;line-height:1.8;margin:0;}.site-footer{text-align:center;color:var(--muted);font-size:13px;padding:32px 0;border-top:1px solid rgba(255,255,255,0.1);margin-top:60px;}.site-footer a{color:var(--accent);text-decoration:none;transition:0.2s;}.site-footer a:hover{text-decoration:underline;}@media (max-width:768px){.wrap{padding:0 16px;margin:20px auto;}.site-header-content{padding:0 16px;}.hero{padding:20px;}.hero h2{font-size:22px;}.lesson-section{grid-template-columns:1fr;gap:16px;margin-top:24px;}.summary-box{padding:16px;}}
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo">  <video src="CHESS HUB.mp4" type="video/mp4" height="90px" width="90px" style="border-radius: 15px;align-self: center;" autoplay loop muted playsinline>
-  </video></div>
-        <div>
-          <h1>Trading Pieces</h1>
-          <p>Simplify, relieve pressure, and steer the game</p>
+    <div class="accent-shape"></div>
+    <header class="site-header">
+        <div class="site-header-content">
+            <a href="index.html" class="logo"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2m0 2c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8m0 2a1 1 0 0 1 .993.883L13 7v5h1a1 1 0 1 1 0 2h-2a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z"/></svg>Chess Hub</a>
+            <nav style="display:flex;gap:20px;font-size:14px;"><a href="openings.html" style="color:#e6eef6;text-decoration:none;">Openings</a><a href="midlegame.html" style="color:#e6eef6;text-decoration:none;">Middlegame</a><a href="endgame.html" style="color:var(--accent);text-decoration:none;">Endgame</a></nav>
         </div>
-      </div>
     </header>
-
-    <main>
-      <section class="card" style="margin-top:20px;">
-        <h2>Description</h2>
-        <p>Trading pieces means exchanging material, typically of equal value. It’s a strategic tool to relieve pressure, simplify into a favorable endgame, or neutralize threats. Strong players use trades to transform the position into one that suits their strengths.</p>
-      </section>
-
-      <div class="media-grid" style="margin-top:18px;">
-        <!-- Video card -->
-        <article class="media-card video-box" aria-label="Trading pieces video">
-          <div class="media" role="region" aria-label="Video player">
-            <img class="poster" src="trade.png" alt="Trading pieces poster" />
-            <button class="play-overlay" aria-label="Play video" data-video-id="rZb8mXs_QbE">▶</button>
-          </div>
-          <div class="meta">
-            <div class="kv">
-              <h2 class="title">Trading Pieces — Lesson</h2>
-              <span class="media-badge">Lesson</span>
+    <main class="wrap">
+        <section class="hero">
+            <h2>Master the Art of Trading Pieces</h2>
+            <p>Learn strategic piece exchanges to simplify positions, relieve pressure, and steer the game toward favorable endgames. Trading is a powerful tool for strong players who know exactly when and how to simplify the position to their advantage.</p>
+        </section>
+        <section class="lesson-section">
+            <div class="lesson-card">
+                <h3>📺 Lesson Video</h3>
+                <div class="video-container"><iframe src="https://www.youtube.com/embed/rZb8mXs_QbE" allowfullscreen="" loading="lazy"></iframe></div>
             </div>
-            <p class="caption">Practical examples of when and why to exchange material.</p>
-          </div>
-        </article>
-
-        <!-- Image card -->
-        <aside class="media-card image-box sidebar" aria-label="Diagram">
-          <div class="media">
-            <img src="trade.png" alt="Diagram: Trading pieces example" />
-          </div>
-          <div class="meta">
-            <h2 class="title">Position Diagram</h2>
-            <p class="caption">A sample position demonstrating a favorable trade.</p>
-            <div style="margin-top:8px;display:flex;gap:8px;">
-              <a class="btn btn-primary" href="#" role="button">View more</a>
-              <a class="btn" href="trade.png" download>Download</a>
+            <div class="lesson-card">
+                <h3>♟️ Solve the Position</h3>
+                <div class="board-placeholder"><strong>Interactive Chess Board</strong><br>Practice deciding which pieces to trade and which to keep in this strategic position.</div>
             </div>
-          </div>
-        </aside>
-      </div>
+        </section>
+        <div class="summary-box">
+            <h4>⚡ Key Takeaways</h4>
+            <p>• <strong>Strategic Simplification:</strong> Trading equal-value pieces helps you reduce the opponent's attacking potential and moves toward endgames where your superior position yields a win.<br><br>• <strong>Relieve Pressure:</strong> Exchange pieces that are attacking your weak squares or pieces you can't defend properly—trading relieves tactical pressure and stabilizes your position.<br><br>• <strong>Transform into Winning Endgames:</strong> Skillfully trade into endgame positions where you have concrete advantages (better king, extra space, or winning technical positions).<br><br>• <strong>Know When NOT to Trade:</strong> Sometimes refuse trades when your pieces are better placed, more active, or when trading benefits your opponent's position more than yours.<br><br>• <strong>Trade Direction Matters:</strong> Trade your weaker pieces for opponent's stronger pieces—this improves your position's relative balance and gives you the advantage.</p>
+        </div>
+        <footer class="site-footer"><p>&copy; 2024 Chess Hub Online Course. <a href="policy.html">Privacy Policy</a></p></footer>
     </main>
-
-    <footer>
-      <div class="small">© Online Chess Course</div>
-      <div class="small">Made with ♟️</div>
-    </footer>
-  </div>
-
-  <script>
-    // lazy-load YouTube iframe on play
-    document.addEventListener('click', function (e) {
-      const btn = e.target.closest('.play-overlay');
-      if (!btn) return;
-      const container = btn.closest('.media');
-      const id = btn.getAttribute('data-video-id');
-      if (!id || !container) return;
-      const iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?rel=0&autoplay=1';
-      iframe.title = 'Lesson video';
-      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-      iframe.setAttribute('frameborder', '0');
-      iframe.setAttribute('allowfullscreen', '');
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      container.innerHTML = '';
-      container.appendChild(iframe);
-    });
-  </script>
+    <script>(function(){const cards=Array.from(document.querySelectorAll('.lesson-card'));const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:0.1});cards.forEach(card=>{card.style.opacity='0';card.style.transform='translateY(20px)';card.style.transition='all 0.5s var(--ease)';observer.observe(card);});})();</script>
 </body>
 </html>

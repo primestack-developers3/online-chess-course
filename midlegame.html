@@ -1,103 +1,359 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chess Middlegames — Online Chess Course</title>
-  <link rel="stylesheet" href="midlegame.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess Middlegames — Online Chess Course</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Inline Styles and Theme -->
+    <style>
+        :root{
+            /* Unified Dark/Amber Theme Variables */
+            --bg-1:#1a1a1a; /* Deep charcoal */
+            --bg-2:#0a0a0a; /* Pure black */
+            --accent:#f59e0b; /* Tailwind Amber-500 */
+            --muted:#a3a3a3; /* Gray-400 */
+            --card:#1c1c1c; /* Dark card background */
+            --radius:14px;
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.8);
+            --shadow-md: 0 6px 20px rgba(0,0,0,0.45);
+            --ease:cubic-bezier(.2,.9,.3,1);
+        }
+
+        html,body{
+            height:100%;
+            margin:0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: radial-gradient(circle at center, var(--bg-1) 0%, var(--bg-2) 100%);
+            color:#e6eef6;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+        }
+
+        .wrap{
+            max-width:1100px;
+            margin:32px auto;
+            padding:0 28px;
+            position:relative;
+            min-height: calc(100vh - 120px); /* Ensure space for footer */
+        }
+
+        /* Decorative Accent Shape */
+        .accent-shape{
+            position:fixed;
+            width:220px;
+            height:220px;
+            left:-80px;
+            bottom:-40px;
+            /* Subtle background glow */
+            background: radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.15), transparent 30%),
+                        radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.08), transparent 40%);
+            border-radius:50%;
+            filter: blur(24px);
+            pointer-events:none;
+            transform:translateZ(0);
+            z-index:0;
+            opacity: 0.6;
+        }
+
+        /* Header Styling */
+        .site-header{
+            background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(6px);
+            padding:10px 0;
+            position:sticky;
+            top:0;
+            z-index:10;
+        }
+        .header-inner{
+            max-width:1100px;
+            margin:0 auto;
+            padding:8px 28px;
+            display:flex;
+            align-items:center;
+            gap:20px;
+        }
+
+        /* Logo Styling (Replaces video) */
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            border-radius: var(--radius);
+            color: var(--bg-2); /* Text color inside logo box */
+            background: linear-gradient(135deg, var(--accent), #ffbf00); /* Amber/Gold gradient */
+            font-size: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* SVG Crown Icon for Logo (Suitable for Middlegames/Strategy theme) */
+        .logo svg {
+            stroke: var(--bg-2);
+        }
+
+        .brand h1{ margin:0; font-size:24px; letter-spacing:0.2px; }
+        .brand .tag{ margin:0; color:var(--muted); font-size:14px; }
+
+        .top-nav{
+            margin-left:auto;
+            display:flex;
+            gap:10px;
+        }
+        .top-nav .btn{
+            padding:8px 14px;
+            border-radius:999px;
+            font-weight:600;
+            text-decoration:none;
+            color: black;
+            background: linear-gradient(90deg, var(--accent), #ffbf00);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+            transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+        }
+        .top-nav .btn:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(245, 158, 11, 0.6);
+        }
+
+        /* Grid Layout */
+        .grid{
+            display:grid;
+            grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+            gap:24px;
+            margin-top:40px;
+        }
+
+        /* Card Styling and Animations (Consistent with Openings page) */
+        .card{
+            display:flex;
+            flex-direction:column;
+            background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border-radius:var(--radius);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+            text-decoration:none;
+            color:inherit;
+            overflow:hidden;
+            transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+            cursor:pointer;
+            
+            /* Initial state for stagger animation */
+            opacity:0;
+            transform:translateY(20px) scale(0.98);
+        }
+
+        /* Hover Animation (Lift and Shadow) */
+        .card:hover{
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 24px 50px rgba(0,0,0,0.8), 0 0 10px var(--accent);
+        }
+
+        /* Staggered Reveal State */
+        .card.in {
+            opacity: 1;
+            transform: none;
+        }
+
+        .card img{
+            width:100%;
+            height:180px;
+            object-fit:cover;
+            border-bottom:1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-meta{
+            padding:18px 20px;
+            text-align:left;
+        }
+        .card-meta h2{
+            font-size:18px;
+            margin:0;
+            color:var(--accent);
+        }
+        .card-meta p{
+            font-size:14px;
+            margin:6px 0 0;
+            color:var(--muted);
+            line-height:1.4;
+        }
+
+        /* Footer */
+        .site-footer{
+            margin-top:40px;
+            padding:18px;
+            text-align:center;
+            color:var(--muted);
+            font-size:13px;
+            border-top:1px solid rgba(255,255,255,0.05);
+        }
+        .site-footer a{ color:var(--accent); text-decoration:none; transition:color 0.2s ease; }
+        .site-footer a:hover{ color:#fff; }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 20px;
+            }
+            .brand { text-align: center; }
+            .top-nav {
+                margin-left: 0;
+                justify-content: center;
+                width: 100%;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="accent-shape" aria-hidden="true"></div>
+    <div class="accent-shape" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="logo">  <video src="CHESS HUB.mp4" type="video/mp4" height="90px" width="90px" style="border-radius: 15px;align-self: center;" autoplay loop muted playsinline>
-  </video></div>
-      <div class="brand">
-        <h1>Chess Middlegames</h1>
-        <p class="tag">Tactics, patterns & practical plans</p>
-      </div>
-      <nav class="top-nav" aria-label="Primary">
-        <a class="btn" href="index.html">Home</a>
-        <a class="btn" href="openings.html">Openings</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <section class="grid" aria-label="Middlegame lessons">
-      <a class="card" href="friedliver.html" data-animate>
-        <img src="friedliver.png" alt="Fried Liver" loading="lazy" />
-        <div class="card-meta">
-          <h2>Fried Liver</h2>
-          <p>Sharp tactical assault from the Italian</p>
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo">
+                <!-- SVG Crown Icon (Replaces CHESS HUB.mp4 video) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 4a3 3 0 0 0-3 3v2h6V7a3 3 0 0 0-3-3z"/>
+                    <path d="M12 17v4"/>
+                    <path d="M12 21h-2a2 2 0 0 1-2-2v-1"/>
+                    <path d="M12 21h2a2 2 0 0 0 2-2v-1"/>
+                    <path d="M6 13h12a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z"/>
+                </svg>
+            </div>
+            <div class="brand">
+                <h1>Chess Middlegames</h1>
+                <p class="tag">Tactics, patterns & practical plans</p>
+            </div>
+            <nav class="top-nav" aria-label="Primary">
+                <a class="btn" href="index.html">Home</a>
+                <a class="btn" href="openings.html">Openings</a>
+            </nav>
         </div>
-      </a>
+    </header>
 
-      <a class="card" href="traxler.html" data-animate>
-        <img src="traxler.png" alt="Traxler" loading="lazy" />
-        <div class="card-meta">
-          <h2>Traxler</h2>
-          <p>Wild counterattacking possibilities and traps</p>
-        </div>
-      </a>
+    <main class="wrap">
+        <section class="grid" aria-label="Middlegame lessons">
+            <!-- Card 1: Fried Liver -->
+            <a class="card" href="friedliver.html" data-animate>
+                <!-- Placeholder for friedliver.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=Fried+Liver+Attack" alt="Fried Liver Attack diagram" loading="lazy" />
+                <div class="card-meta">
+                    <h2>Fried Liver Attack</h2>
+                    <p>Sharp tactical assault from the Italian</p>
+                </div>
+            </a>
 
-      <a class="card" href="pawnwall.html" data-animate>
-        <img src="pawnwall.png" alt="Pawn Wall" loading="lazy" />
-        <div class="card-meta">
-          <h2>Pawn Wall</h2>
-          <p>Structure and plans for closed positions</p>
-        </div>
-      </a>
+            <!-- Card 2: Traxler -->
+            <a class="card" href="traxler.html" data-animate>
+                <!-- Placeholder for traxler.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=Traxler+Counterattack" alt="Traxler Counterattack diagram" loading="lazy" />
+                <div class="card-meta">
+                    <h2>Traxler Counterattack</h2>
+                    <p>Wild counterattacking possibilities and traps</p>
+                </div>
+            </a>
 
-      <a class="card" href="arabianknight.html" data-animate>
-        <img src="arabianknight.png" alt="Arabian Knight" loading="lazy" />
-        <div class="card-meta">
-          <h2>Arabian Knight</h2>
-          <p>Classic mating patterns with rook + knight</p>
-        </div>
-      </a>
+            <!-- Card 3: Pawn Wall -->
+            <a class="card" href="pawnwall.html" data-animate>
+                <!-- Placeholder for pawnwall.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=Pawn+Wall+Structure" alt="Pawn Wall structure diagram" loading="lazy" />
+                <div class="card-meta">
+                    <h2>Pawn Wall</h2>
+                    <p>Structure and plans for closed positions</p>
+                </div>
+            </a>
 
-      <a class="card" href="trade.html" data-animate>
-        <img src="trade.png" alt="Trading Pieces" loading="lazy" />
-        <div class="card-meta">
-          <h2>Trading Pieces</h2>
-          <p>When to trade and how to convert endgames</p>
-        </div>
-      </a>
-    </section>
+            <!-- Card 4: Arabian Knight -->
+            <a class="card" href="arabianknight.html" data-animate>
+                <!-- Placeholder for arabianknight.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=Arabian+Mating+Pattern" alt="Arabian Mating Pattern diagram" loading="lazy" />
+                <div class="card-meta">
+                    <h2>Arabian Mating Pattern</h2>
+                    <p>Classic mating patterns with rook + knight</p>
+                </div>
+            </a>
 
-    <footer class="site-footer">
-      <div>© Online Chess Course — <a href="index.html">Home</a></div>
-    </footer>
-  </main>
+            <!-- Card 5: Trading Pieces -->
+            <a class="card" href="trade.html" data-animate>
+                <!-- Placeholder for trade.png -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=Trading+Pieces" alt="Trading Pieces Strategy diagram" loading="lazy" />
+                <div class="card-meta">
+                    <h2>Trading Pieces</h2>
+                    <p>When to trade and how to convert endgames</p>
+                </div>
+            </a>
 
-  <script>
-    (function(){
-      const items = Array.from(document.querySelectorAll('[data-animate]'));
-      const io = new IntersectionObserver((entries)=>{
-        entries.forEach(e=>{
-          if(e.isIntersecting){
-            const el = e.target;
-            el.style.transitionDelay = (items.indexOf(el) * 60) + 'ms';
-            el.classList.add('in');
-            io.unobserve(el);
-          }
-        });
-      }, {threshold: 0.12});
-      items.forEach(i=>io.observe(i));
+            <!-- Added 3 more cards to make the page longer/more substantial -->
 
-      // smooth scroll for hash links
-      document.querySelectorAll('a[href^="#"]').forEach(a=>{
-        a.addEventListener('click', e=>{
-          e.preventDefault();
-          const id = a.getAttribute('href').slice(1);
-          const t = document.getElementById(id);
-          if(t) t.scrollIntoView({behavior:'smooth', block:'start'});
-        });
-      });
-    })();
-  </script>
+            <!-- Card 6: King Hunt -->
+            <a class="card" href="coming soon.html" data-animate>
+                <!-- Placeholder for new image -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=King+Hunt+Sacrifice" alt="King Hunt Sacrifice diagram" loading="lazy" />
+                <div class="card-meta">
+                    <h2>King Hunt</h2>
+                    <p>Attacking the uncastled or exposed King</p>
+                </div>
+            </a>
+
+            <!-- Card 7: Outposts -->
+            <a class="card" href="coming soon.html" data-animate>
+                <!-- Placeholder for new image -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=Central+Outposts" alt="Central Outposts diagram" loading="lazy" />
+                <div class="card-meta">
+                    <h2>Central Outposts</h2>
+                    <p>Establishing stable, dominant minor pieces</p>
+                </div>
+            </a>
+
+            <!-- Card 8: Positional Sacrifices -->
+            <a class="card" href="coming soon.html" data-animate>
+                <!-- Placeholder for new image -->
+                <img src="https://placehold.co/400x180/1c1c1c/f59e0b?text=Positional+Sacrifice" alt="Positional Sacrifice diagram" loading="lazy" />
+                <div class="card-meta">
+                    <h2>Positional Sacrifices</h2>
+                    <p>Giving material for long-term advantage</p>
+                </div>
+            </a>
+        </section>
+
+        <footer class="site-footer">
+            <div>© Online Chess Course — <a href="index.html">Home</a></div>
+        </footer>
+    </main>
+
+    <script>
+        // reveal on scroll + gentle stagger
+        (function(){
+            const items = Array.from(document.querySelectorAll('[data-animate]'));
+            const io = new IntersectionObserver((entries)=>{
+                entries.forEach(e=>{
+                    if(e.isIntersecting){
+                        const el = e.target;
+                        // Calculate staggered delay based on index
+                        el.style.transitionDelay = (items.indexOf(el) * 60) + 'ms';
+                        el.classList.add('in');
+                        io.unobserve(el);
+                    }
+                });
+            }, {threshold: 0.1}); // Trigger when 10% of element is visible
+            
+            items.forEach(i=>io.observe(i));
+
+            // smooth scroll is not needed here as there are no internal hash links
+        })();
+    </script>
 </body>
 </html>
 

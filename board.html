@@ -12,8 +12,8 @@
         /* --- Global Dark Theme & Layout --- */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Slate 900 */
-            color: #e2e8f0; 
+            background: radial-gradient(circle at center, #1a1a1a 0%, #c08012 100%);
+            color: #e6eef6; 
             display: flex; 
             justify-content: center;
             align-items: flex-start;
@@ -25,8 +25,8 @@
         /* --- Custom Active Button Style --- */
         .active-mode-btn {
             transform: scale(1.05); /* slightly raise it */
-            box-shadow: 0 0 15px rgba(249, 115, 22, 0.7); /* Orange glow to indicate selection */
-            border: 2px solid #f97316; /* Orange border */
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.7); /* Amber glow to indicate selection */
+            border: 2px solid #f59e0b; /* Amber border */
             font-weight: 900;
         }
 
@@ -126,14 +126,15 @@
             z-index: 10;
             transition: background-color 0.2s;
             aspect-ratio: 1 / 1; 
+            border-radius: 15px;
         }
 
         /* --- Custom Board Colors (Muted Dark Theme) --- */
-        .square-light { background-color: #f0d9b5; } /* Light Beige */
-        .square-dark { background-color: #b58863; } /* Muted Brown */
+        .square-light { background-color: #D4A017; } /* Light Beige */
+        .square-dark { background-color: #0B4F3C; } /* Muted Brown */
         
         /* State Indicators */
-        .selected-square { background-color: #4c4f92 !important; } 
+        .selected-square { background-color: #ffc400 !important; } 
         .square-check { background-color: #f97316 !important; } 
         .square-checkmate { background-color: #ef4444 !important; } 
         
@@ -148,8 +149,8 @@
         .piece:active {
             transform: scale(1.05);
         }
-        .white-piece { color: #ffffff; text-shadow: 0 0 2px rgba(0,0,0,0.5); }
-        .black-piece { color: #000000; text-shadow: 0 0 2px rgba(255,255,255,0.5); }
+        .white-piece { color: #E0B84C; text-shadow: 0 0 2px rgba(0,0,0,0.5); }
+        .black-piece { color: #123B2A; text-shadow: 0 0 2px rgba(255,255,255,0.5); }
         
         /* Visual cue for Legal Moves */
         .possible-move {
@@ -160,7 +161,7 @@
             display: block;
             width: 25%;
             height: 25%;
-            background-color: rgba(76, 79, 146, 0.9); 
+            background-color: #ffc400; 
             border-radius: 50%;
             position: absolute;
             top: 50%;
@@ -185,7 +186,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: #B9972E);
             display: none;
             justify-content: center;
             align-items: center;
