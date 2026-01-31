@@ -5,18 +5,17 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-aut
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_MSG_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBiL0Uq6OPua7bXFSVzzergfd8O7Rqz4FY",
+  authDomain: "chess-hub-a11e6.firebaseapp.com",
+  projectId: "chess-hub-a11e6",
+  storageBucket: "chess-hub-a11e6.firebasestorage.app",
+  messagingSenderId: "805706554537",
+  appId: "1:805706554537:web:419598c3afbc71f4595db8"
 };
 
-/* 🔥 INITIALIZATION HAPPENS ONLY HERE */
+
 const app = initializeApp(firebaseConfig);
 
-/* export services */
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
