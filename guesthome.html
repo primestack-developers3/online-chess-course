@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Hub - Learn & Play Chess Online</title>
+    <style>
+        :root{ --bg-1:#1a1a1a; --bg-2:#0a0a0a; --accent:#f59e0b; --muted:#a3a3a3; }
+        html,body{ height:100%; margin:0; font-family: Inter, -apple-system, sans-serif; background: radial-gradient(circle at center, var(--bg-1) 0%, var(--bg-2) 100%); color:#e6eef6; overflow-x: hidden; }
+
+        nav{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        nav h1{ margin: 0; color: var(--accent); font-size: 24px; }
+
+        .nav-links{ display: flex; gap: 30px; align-items: center; }
+        .nav-links a{ color: #e6eef6; text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover{ color: var(--accent); }
+
+        .btn{ padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn-primary{ background: linear-gradient(90deg, var(--accent), #ffbf00); color: #000; }
+        .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4); }
+
+        .btn-secondary{ background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+        .btn-secondary:hover{ background: rgba(245, 158, 11, 0.1); }
+
+        .hero{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 70px);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .hero-content{ max-width: 700px; }
+        .hero-content h2{ font-size: 48px; margin: 0 0 20px 0; color: #fff; }
+        .hero-content p{ font-size: 18px; color: var(--muted); margin: 0 0 40px 0; line-height: 1.6; }
+
+        .hero-buttons{
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .features{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 60px 40px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .feature-card{
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .feature-card h3{ color: var(--accent); margin-top: 15px; }
+        .feature-card p{ color: var(--muted); font-size: 14px; }
+
+        .emoji{ font-size: 40px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>♟ Chess Hub</h1>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="index.html" class="btn btn-secondary">Login</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h2>Master Chess Online</h2>
+            <p>Learn from beginner to advanced levels, play against opponents, and track your progress with Chess Hub.</p>
+            <div class="hero-buttons">
+                <a href="signup.html" class="btn btn-primary">Get Started</a>
+                <a href="index.html" class="btn btn-secondary">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="features" class="features">
+        <div class="feature-card">
+            <div class="emoji">📚</div>
+            <h3>Learn Chess</h3>
+            <p>Comprehensive tutorials from beginner to master level</p>
+        </div>
+        <div class="feature-card">
+            <div class="emoji">🎮</div>
+            <h3>Play Games</h3>
+            <p>Challenge opponents and improve your skills</p>
+        </div>
+        <div class="feature-card">
+            <div class="emoji">📊</div>
+            <h3>Track Progress</h3>
+            <p>Save games and analyze your gameplay</p>
+        </div>
+        <div class="feature-card">
+            <div class="emoji">🏆</div>
+            <h3>Leaderboard</h3>
+            <p>Compete globally and climb the rankings</p>
+        </div>
+    </div>
+</body>
+</html>
