@@ -48,7 +48,7 @@
                 await authModule.signin(userVal, passVal);
                 
                 // Redirect to home.html on success
-                window.location.href = 'home.html';
+                window.location.href = "home.html";
             } catch (err) {
                 alert(err.message);
                 loginBtn.disabled = false;
