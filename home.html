@@ -712,112 +712,75 @@
         })();
     </script>
 
-    <script>
-        // Chess Hub Authentication & Dashboard
-        class ChessAuthDashboard {
-            constructor() {
-                this.storageKey = 'chessHubUser';
-                this.progressKey = 'chessHubProgress';
-                this.init();
-            }
+    <script type="module">
+/* =========================
+   Firebase Imports
+   ========================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+    getAuth, 
+    onAuthStateChanged, 
+    signOut 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-            init() {
-                this.updateDashboard();
-                this.setupEventListeners();
-            }
 
-            getUser() {
-                return JSON.parse(localStorage.getItem(this.storageKey));
-            }
+/* =========================
+   Firebase Initialization
+   ========================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyBiL0Uq6OPua7bXFSVzzergfd8O7Rqz4FY",
+  authDomain: "chess-hub-a11e6.firebaseapp.com",
+  projectId: "chess-hub-a11e6",
+  storageBucket: "chess-hub-a11e6.firebasestorage.app",
+  messagingSenderId: "805706554537",
+  appId: "1:805706554537:web:419598c3afbc71f4595db8"
+};
 
-            getLessonProgress() {
-                const user = this.getUser();
-                if (!user) return {};
-                const progressKey = this.progressKey + '_' + user.username;
-                return JSON.parse(localStorage.getItem(progressKey) || '{}');
-            }
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-            getCompletionPercentage() {
-                const progress = this.getLessonProgress();
-                const lessons = ['openings', 'midlegame', 'endgame', 'puzzles', 'board'];
-                const completed = Object.keys(progress).length;
-                return Math.round((completed / lessons.length) * 100);
-            }
 
-            updateDashboard() {
-                const user = this.getUser();
-                const loginBtn = document.getElementById('loginBtn');
-                const dashboard = document.getElementById('dashboard');
-                const username = document.getElementById('username');
-                const progressText = document.getElementById('progressText');
-                const profilePic = document.getElementById('profilePic');
+/* =========================
+   Existing Elements (no HTML change)
+   ========================= */
+const loginBtn   = document.getElementById("loginBtn");
+const dashboard  = document.getElementById("dashboard");
+const usernameEl = document.getElementById("username");
+const profilePic = document.getElementById("profilePic");
+const logoutBtn  = document.getElementById("logoutBtn");
 
-                if (user) {
-                    // User is logged in
-                    loginBtn.style.display = 'none';
-                    dashboard.style.display = 'flex';
 
-                    // Set username
-                    username.textContent = user.isGuest ? '👤 Guest' : '👤 ' + user.username;
+/* =========================
+   Auth State
+   ========================= */
+onAuthStateChanged(auth, (user) => {
 
-                    // Set progress
-                    const percentage = this.getCompletionPercentage();
-                    progressText.textContent = percentage + '% Complete';
+    if (user) {
+        if (loginBtn) loginBtn.style.display = "none";
+        if (dashboard) dashboard.style.display = "flex";
 
-                    // Set profile picture (generate avatar based on username)
-                    const seed = user.username || 'Guest_User';
-                    profilePic.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seed)}`;
-                } else {
-                    // User not logged in
-                    loginBtn.style.display = 'inline-block';
-                    dashboard.style.display = 'none';
-                }
-            }
+        if (usernameEl)
+            usernameEl.textContent = user.displayName || "Player";
 
-            setupEventListeners() {
-                const logoutBtn = document.getElementById('logoutBtn');
-                if (logoutBtn) {
-                    logoutBtn.addEventListener('click', () => {
-                        this.logout();
-                    });
-                }
+        if (profilePic)
+            profilePic.src = user.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=user";
 
-                // Profile picture click to view more options
-                const profilePic = document.getElementById('profilePic');
-                if (profilePic) {
-                    profilePic.addEventListener('click', () => {
-                        this.showProfileOptions();
-                    });
-                }
-            }
+    } else {
+        if (dashboard) dashboard.style.display = "none";
+        if (loginBtn) loginBtn.style.display = "inline-block";
+    }
+});
 
-            logout() {
-                const user = this.getUser();
-                if (user?.isGuest) {
-                    localStorage.removeItem('chessHubProgress_Guest_User');
-                }
-                localStorage.removeItem(this.storageKey);
-                this.updateDashboard();
-                alert('Logged out successfully!');
-                window.location.href = 'login.html';
-            }
 
-            showProfileOptions() {
-                const user = this.getUser();
-                if (!user) return;
-
-                const message = user.isGuest 
-                    ? 'Guest Account\nProgress: ' + this.getCompletionPercentage() + '%' 
-                    : 'User: ' + user.username + '\nProgress: ' + this.getCompletionPercentage() + '%';
-                
-                alert(message);
-            }
-        }
-
-        // Initialize dashboard on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            const authDashboard = new ChessAuthDashboard();
-        });
-    </script>
+/* =========================
+   Logout
+   ========================= */
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+        await signOut(auth);
+        window.location.href = "login.html";
+    });
+}
+</script>
 </body>
 </html>
