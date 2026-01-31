@@ -1,47 +1,194 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - ChessHub</title>
   <style>
-    body{
-      background:#0a0a0a;
-      color:white;
-      display:flex;
-      height:100vh;
-      justify-content:center;
-      align-items:center;
-      font-family:Arial;
+    :root {
+      --primary: #f59e0b;
+      --primary-hover: #d97706;
+      --bg-dark: #080808;
+      --card-bg: rgba(20, 20, 20, 0.8);
+      --glass-border: rgba(255, 255, 255, 0.1);
     }
-    button{
-      padding:14px 24px;
-      background:#f59e0b;
-      border:none;
-      border-radius:8px;
-      font-weight:bold;
-      cursor:pointer;
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      /* Subtle Chessboard Pattern Background */
+      background-image: 
+        linear-gradient(45deg, #111 25%, transparent 25%), 
+        linear-gradient(-45deg, #111 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #111 75%), 
+        linear-gradient(-45deg, transparent 75%, #111 75%);
+      background-size: 80px 80px;
+      background-position: 0 0, 0 40px, 40px -40px, -40px 0px;
+      
+      color: white;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Floating Glow Effect */
+    .glow {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: var(--primary);
+      filter: blur(150px);
+      border-radius: 50%;
+      opacity: 0.15;
+      z-index: 0;
+      animation: float 10s infinite alternate;
+    }
+
+    @keyframes float {
+      from { transform: translate(-10%, -10%); }
+      to { transform: translate(10%, 10%); }
+    }
+
+    .login-card {
+      position: relative;
+      z-index: 1;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      padding: 3rem 2rem;
+      border-radius: 24px;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .brand-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to bottom right, #fff, #999);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #888;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      position: relative;
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--primary);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    button:hover {
+      background: #fbbf24;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* Loading Spinner Styling */
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 3px solid rgba(0,0,0,0.3);
+      border-radius: 50%;
+      border-top-color: #000;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    button.loading .spinner {
+      display: block;
+    }
+    
+    button.loading .btn-text {
+      opacity: 0.7;
     }
   </style>
 </head>
-
 <body>
 
-<button id="loginBtn">Sign in with Google</button>
+  <div class="glow"></div>
 
-<script type="module">
-import { loginWithGoogle, onAuthChange } from "./auth.js";
+  <div class="login-card">
+    <span class="brand-icon">♞</span>
+    <h1>ChessHub</h1>
+    <p>Sign in to challenge the world.</p>
+    
+    <button id="loginBtn">
+      <div class="spinner"></div>
+      <span class="btn-text">Sign in with Google</span>
+    </button>
+  </div>
 
-const btn = document.getElementById("loginBtn");
+  <script type="module">
+    import { loginWithGoogle, onAuthChange } from "./auth.js";
 
-btn.onclick = async () => {
-  btn.textContent = "Signing in...";
-  await loginWithGoogle();
-  window.location.href = "home.html";
-};
+    const btn = document.getElementById("loginBtn");
+    const btnText = btn.querySelector(".btn-text");
 
-onAuthChange((user)=>{
-  if(user) window.location.href="home.html";
-});
-</script>
+    btn.onclick = async () => {
+      // UI State Change
+      btn.classList.add("loading");
+      btn.disabled = true;
+      btnText.textContent = "Connecting...";
+
+      try {
+        await loginWithGoogle();
+        window.location.href = "home.html";
+      } catch (error) {
+        console.error("Login failed", error);
+        btn.classList.remove("loading");
+        btn.disabled = false;
+        btnText.textContent = "Try Again";
+      }
+    };
+
+    onAuthChange((user) => {
+      if (user) window.location.href = "home.html";
+    });
+  </script>
 
 </body>
 </html>
